@@ -46,17 +46,14 @@ Kronik hastalıklara sahip ve düzenli ilaç kullanımı gereken hastalar, yaşl
 
 ---
 
-## 📝 Sprint Notları
-
-
-### 🎯 Sprint 1 
+## 📝 Sprint 1
 ### 🎯 Sprint Amacı
 Bu sprint'te İlaçAsistan uygulamasının temel altyapısını oluşturmak ve kullanıcı kayıt/giriş sisteminin temellerini atmak hedeflenmiştir. Takım oluşumu tamamlanacak ve proje için gerekli teknolojiler belirlenerek development sürecine başlanacaktır.
 - 📅 **Sprint Tarihleri:** 20 Haziran 2025 - 6 Temmuz 2025  
 - 🎯 **Sprint İçinde Tamamlanması Tahmin Edilen Puan:**  80 Puan
 - 🎯 **Puan Tamamlama Mantığı:** İlk sprintin 80 puan, ikinci sprintin 120 puan ve üçüncü sprintin 150 puanlık bir hedefi vardır.İlk sprint takım oluşumu ve altyapı hazırlığı odaklı olduğu için düşük puan hedefi belirlendi. 
 ---
-- **Daily Scrum:**Ekipte yaşanan bazı sorunlardan dolayı ilk toplantıya iki arkadaşımız katılamadı.Genel proje durumu Whatsapp üzerinden konuşularak ilerlendi.Diğer Sprintlerde eksiksiz katılım olacağı belirtildi.
+- **Daily Scrum:** Ekipte yaşanan bazı sorunlardan dolayı ilk toplantıya iki arkadaşımız katılamadı.Genel proje durumu Whatsapp üzerinden konuşularak ilerlendi.Diğer Sprintlerde eksiksiz katılım olacağı belirtildi.
 ---
 ## 📋**Backlog Düzeni ve Story Seçimleri:**
 * Backlog'umuz bir sonraki sprintlerin temelini atacak şekilde düzenlenmiştir. Sprint başına tahmin edilen puan sayısını geçmeyecek şekilde görevler dağıtılmıştır.
