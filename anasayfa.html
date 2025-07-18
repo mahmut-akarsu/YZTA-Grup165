@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kullanıcı Paneli</title>
+  <link rel="stylesheet" href="anasayfa.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-logo">
+      <span class="black">İlaç</span><span class="blue">Asistan</span>
+    </div>
+    <ul class="navbar-menu">
+      <li><a href="#anasayfa">Ana Sayfa</a></li>
+      <li><a href="#profil">Profil</a></li>
+      <li><a href="#raporlar">Raporlar</a></li>
+      <li><a href="#" onclick="cikisYap()">Çıkış</a></li>
+    </ul>
+  </nav>
+
+  <!-- Arama Kutusu -->
+  <section class="arama-kutusu">
+    <h1>İLAÇ ARA</h1>
+    <div class="search-box">
+      <input type="text" class="search-input" id="ilacInput" placeholder="İlaç ismi girin..." />
+      <button class="icon-button" onclick="kameraAc()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 7h4l1.5-2h7L17 7h4v12H3V7z" />
+          <circle cx="12" cy="13" r="3" />
+        </svg>
+      </button>
+      <button class="ara-button" onclick="ilacAra()">Ara</button>
+    </div>
+    <video id="kamera-video" autoplay style="display: none; margin-top: 15px;" width="300" height="200"></video>
+  </section>
+
+  <!-- İlaç Bilgi ve Ekleme Alanı -->
+  <section id="ilac-bilgi-kutusu" style="display: none; margin: 20px;">
+    <h3 id="ilac-adi"></h3>
+    <p id="ilac-aciklama"></p>
+
+    <div class="ekle-formu">
+      <label for="gun">Gün:</label>
+      <select id="gun">
+        <option>Her Gün</option>
+        <option>Pazartesi</option>
+        <option>Salı</option>
+        <option>Çarşamba</option>
+        <option>Perşembe</option>
+        <option>Cuma</option>
+        <option>Cumartesi</option>
+        <option>Pazar</option>
+      </select>
+
+      <label for="saat">Saat:</label>
+      <input type="time" id="saat" />
+
+      <button onclick="ilacEkle()">İlaçlara Ekle</button>
+    </div>
+  </section>
+
+  <!-- Ana İçerik -->
+  <main class="container">
+    <!-- Kullanıcı Bilgileri -->
+    <section class="user-info-card" id="profil">
+      <h2>👤 Kullanıcı Bilgileri</h2>
+      <p><strong>Ad:</strong> Ayşe Demir</p>
+      <p><strong>Kullanıcı ID:</strong> <span id="user-id">A56342F</span>
+        <button onclick="copyID()">📋 Kopyala</button>
+      </p>
+      <small>Sağlık profesyoneliniz bu ID ile raporlarınıza erişebilir.</small>
+    </section>
+
+    <!-- Günlük İlaç Planı -->
+    <section class="ilac-plani">
+      <h2>💊 Bugünkü İlaç Planınız</h2>
+      <ul>
+        <li><strong>08:00</strong> - Parol 500mg ✔️</li>
+        <li><strong>12:00</strong> - Augmentin 1g 🔔</li>
+        <li><strong>20:00</strong> - Vitamin D3 💊</li>
+      </ul>
+    </section>
+
+    <!-- Etkileşim Uyarısı -->
+    <section class="uyari-karti">
+      <h2>🚨 Etkileşim Uyarısı</h2>
+      <p>Parol ve Augmentin birlikte kullanıldığında mide bulantısı riski artabilir. Lütfen doktorunuza danışın.</p>
+    </section>
+
+    <!-- Hızlı Erişim -->
+    <section class="hizli-erisim">
+      <h2>⚙️ Hızlı Erişim</h2>
+      <div class="butonlar">
+        <button>➕ Yeni İlaç Ekle</button>
+        <button>📅 Takvimi Gör</button>
+        <button>📈 Raporları Gör</button>
+        <button>🔍 İlaç Bilgisi</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Script -->
+  <script>
+    function copyID() {
+      const userId = document.getElementById("user-id").textContent;
+      navigator.clipboard.writeText(userId);
+      alert("Kullanıcı ID'si panoya kopyalandı: " + userId);
+    }
+
+    function cikisYap() {
+      alert("Çıkış yapılıyor...");
+    }
+
+    function kameraAc() {
+      const video = document.getElementById('kamera-video');
+      video.style.display = 'block';
+
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true })
+          .then(function (stream) {
+            video.srcObject = stream;
+          })
+          .catch(function (err) {
+            alert('Kamera erişimi reddedildi veya desteklenmiyor.');
+            console.error(err);
+          });
+      } else {
+        alert("Tarayıcınız bu özelliği desteklemiyor.");
+      }
+    }
+
+    function ilacAra() {
+      const ilacAdi = document.getElementById('ilacInput').value.trim();
+      if (!ilacAdi) {
+        alert("Lütfen bir ilaç ismi girin.");
+        return;
+      }
+
+      const aciklama = `${ilacAdi} yaygın olarak kullanılan bir ilaçtır. Lütfen doktor tavsiyesiyle kullanınız.`;
+
+      document.getElementById('ilac-adi').innerText = ilacAdi;
+      document.getElementById('ilac-aciklama').innerText = aciklama;
+      document.getElementById('ilac-bilgi-kutusu').style.display = 'block';
+    }
+
+    function ilacEkle() {
+      const ilac = document.getElementById('ilac-adi').innerText;
+      const gun = document.getElementById('gun').value;
+      const saat = document.getElementById('saat').value;
+
+      if (!saat) {
+        alert("Lütfen bir saat seçin.");
+        return;
+      }
+
+      alert(`${ilac} adlı ilaç ${gun} günü saat ${saat}'te alınmak üzere eklendi.`);
+    }
+  </script>
+
+</body>
+</html>

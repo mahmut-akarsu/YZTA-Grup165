@@ -1,0 +1,232 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-image: #fff;
+    background-size: cover;
+    background-repeat: repeat;
+    background-position: center;
+    min-height: 100vh;
+  }
+  
+
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 32px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid #eee;
+  }
+  
+  .navbar-logo {
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .navbar-logo .black {
+    color: #2c2c2c;
+  }
+  
+  .navbar-logo .blue {
+    color: #256D85;
+  }
+  
+  .navbar-menu {
+    list-style: none;
+    display: flex;
+    gap: 32px;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navbar-menu li a {
+    text-decoration: none;
+    color: #2c2c2c;
+    font-size: 16px;
+    transition: color 0.3s ease;
+  }
+  
+  .navbar-menu li a:hover {
+    color: #256D85;
+  }
+  /* Sayfa İçeriği */
+.container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+.arama-kutusu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 60px 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.arama-kutusu h1 {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #111;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  width: 80%; /* Genişlik artırıldı */
+  max-width: 700px;
+  border: 3px solid #004aad;
+  border-radius: 50px;
+  background-color: white;
+  padding: 14px 24px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+}
+
+.search-box:hover {
+  box-shadow: 0 8px 30px rgba(0, 74, 173, 0.2);
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 20px;
+  font-weight: 500;
+  padding: 10px 0;
+  color: #000;
+  font-family: 'Poppins', sans-serif;
+  background: transparent;
+}
+
+.search-input::placeholder {
+  color: #999;
+  font-weight: 400;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 0 0 14px;
+  display: flex;
+  align-items: center;
+}
+
+.icon-button svg {
+  width: 30px;
+  height: 30px;
+  stroke: #004aad;
+  transition: transform 0.2s ease;
+}
+
+.icon-button:hover svg {
+  transform: scale(1.15);
+}
+.ara-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-left: 10px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.ara-button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+.ara-button:active {
+  transform: scale(0.97);
+  background-color: #004080;
+}
+
+/* Kullanıcı Bilgileri Kartı */
+.user-info-card {
+  background-color: #ffffff;
+  border-left: 5px solid #007BFF;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* Etkileşim Uyarısı */
+.uyari-karti {
+  background-color: #fff3f3;
+  border-left: 5px solid #ff4d4f;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-radius: 8px;
+  color: #a30000;
+  box-shadow: 0 2px 6px rgba(255, 0, 0, 0.1);
+}
+
+/* İlaç Planı */
+.ilac-plani {
+  background-color: #ffffff;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.ilac-plani ul {
+  padding-left: 20px;
+}
+
+.ilac-plani li {
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+/* Hızlı Erişim Butonları */
+.hizli-erisim {
+  background-color: #ffffff;
+  padding: 20px;
+  margin-bottom: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.butonlar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.butonlar button {
+  background-color: #007BFF;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.butonlar button:hover {
+  background-color: #0056b3;
+}
+
+/* Buton ve ID stil ayarları */
+button {
+  cursor: pointer;
+}
+
+#user-id {
+  font-family: monospace;
+  background-color: #e9f1ff;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+  
