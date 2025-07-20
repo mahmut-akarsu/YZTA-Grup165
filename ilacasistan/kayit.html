@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol - İlaçAsistan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(10px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .card-selected-blue {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-selected-green {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-unselected {
+            border-color: #e5e7eb;
+        }
+        
+        .card-unselected:hover {
+            border-color: #d1d5db;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Header - Gradient Background -->
+    <div class="gradient-bg">
+        <!-- Navigation -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex items-center cursor-pointer" onclick="handleAnaSayfa()">
+                    <div class="bg-cyan-400 rounded-full p-2 mr-3">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                    </div>
+                    <span class="text-2xl font-bold text-white">İlaçAsistan</span>
+                </div>
+
+                <!-- Navigation Menu -->
+                <nav class="hidden md:flex space-x-8">
+                    <button onclick="handleAnaSayfa()" class="text-white/80 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        Ana Sayfa
+                    </button>
+                    <button class="text-white/80 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        Hakkında
+                    </button>
+                    <button class="text-white/80 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        Doktor Paneli
+                    </button>
+                    <button class="text-white/90 bg-white/20 px-4 py-2 rounded-full text-sm font-medium">
+                        Kayıt Ol
+                    </button>
+                </nav>
+
+                <!-- Login Button -->
+                <button onclick="handleGirisYap()" class="text-white/80 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                    Çıkış Yap
+                </button>
+            </div>
+        </div>
+
+        <!-- Page Title Section -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-8 text-center">
+            <div class="flex justify-center mb-4">
+                <div class="bg-white/20 rounded-full p-4">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                </div>
+            </div>
+            <h1 class="text-5xl font-bold text-white mb-4">Hesap Oluştur</h1>
+            <p class="text-xl text-white/90">
+                İlaçAsistan'a katılın ve güvenli ilaç takibi yapın
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Content - White Background -->
+    <div class="bg-white min-h-screen">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            
+            <!-- Form Container -->
+            <div class="max-w-2xl mx-auto">
+                
+                <!-- Kullanıcı Tipi Seçimi -->
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Hesap Tipi Seçin</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div onclick="selectUserType('hasta')" id="hasta-card" class="relative cursor-pointer rounded-2xl border-2 border-blue-500 bg-blue-50 shadow-lg p-8 transition-all duration-200">
+                            <div class="absolute top-0 left-0 w-full h-1 bg-blue-500 rounded-t-2xl"></div>
+                            <div class="text-center">
+                                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 bg-blue-100">
+                                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2">Hasta</h3>
+                                <p class="text-gray-600 text-sm">
+                                    İlaç takibi yapın, doktorlarınızla iletişim kurun
+                                </p>
+                            </div>
+                        </div>
+
+                        <div onclick="selectUserType('doktor')" id="doktor-card" class="relative cursor-pointer rounded-2xl border-2 border-gray-200 hover:border-gray-300 hover:shadow-md p-8 transition-all duration-200">
+                            <div class="text-center">
+                                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 bg-gray-100">
+                                    <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2">Doktor</h3>
+                                <p class="text-gray-600 text-sm">
+                                    Hastalarınızı takip edin, ilaç önerileri yapın
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kayıt Formu -->
+                <div class="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Bilgilerinizi Girin</h2>
+                    
+                    <form onsubmit="handleSubmit(event)" class="space-y-6">
+                        <!-- Ad Soyad -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="ad" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Ad *
+                                </label>
+                                <input
+                                    type="text"
+                                    id="ad"
+                                    name="ad"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+                                    placeholder="Adınızı girin"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label for="soyad" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Soyad *
+                                </label>
+                                <input
+                                    type="text"
+                                    id="soyad"
+                                    name="soyad"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+                                    placeholder="Soyadınızı girin"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                                E-posta Adresi *
+                            </label>
+                            <div class="relative">
+                                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+                                    placeholder="ornek@email.com"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Şifre -->
+                        <div>
+                            <label for="sifre" class="block text-sm font-medium text-gray-700 mb-2">
+                                Şifre *
+                            </label>
+                            <div class="relative">
+                                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                </svg>
+                                <input
+                                    type="password"
+                                    id="sifre"
+                                    name="sifre"
+                                    class="w-full pl-11 pr-11 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
+                                    placeholder="En az 8 karakter"
+                                    required
+                                    minlength="8"
+                                />
+                                <button
+                                    type="button"
+                                    onclick="togglePassword()"
+                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                                >
+                                    <svg id="eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-1">
+                                Şifreniz en az 8 karakter olmalıdır
+                            </p>
+                        </div>
+
+                        <!-- Doktor ID (sadece doktor seçildiğinde görünür) -->
+                        <div id="doktor-fields" class="border-t border-gray-200 pt-6" style="display: none;">
+                            <div class="bg-green-50 rounded-lg p-4 mb-4">
+                                <h3 class="text-sm font-medium text-green-800 mb-1">Doktor Bilgileri</h3>
+                                <p class="text-sm text-green-700">
+                                    Doktor olarak sisteme kaydolmak için kimlik bilgilerinizi girin
+                                </p>
+                            </div>
+                            
+                            <label for="drId" class="block text-sm font-medium text-gray-700 mb-2">
+                                Doktor ID *
+                            </label>
+                            <div class="relative">
+                                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <input
+                                    type="text"
+                                    id="drId"
+                                    name="drId"
+                                    class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all duration-200"
+                                    placeholder="Dr. ID numaranızı girin"
+                                />
+                            </div>
+                            <p class="text-sm text-gray-500 mt-1">
+                                Doktor kimlik numaranızı girin
+                            </p>
+                        </div>
+
+                        <!-- Kayıt Ol Butonu -->
+                        <div class="pt-6">
+                            <button
+                                type="submit"
+                                id="submit-btn"
+                                class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-4 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+                            >
+                                Hasta Hesabı Oluştur ve Profilime Git
+                            </button>
+                        </div>
+
+                        <!-- Giriş Yap Linki -->
+                        <div class="text-center pt-4 border-t border-gray-200">
+                            <p class="text-gray-600">
+                                Zaten hesabınız var mı?
+                                <button
+                                    type="button"
+                                    onclick="handleGirisYap()"
+                                    class="text-blue-600 hover:text-blue-700 font-semibold hover:underline transition-colors ml-1"
+                                >
+                                    Giriş Yapın
+                                </button>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Gizlilik ve Şartlar -->
+                <div class="mt-8 text-center">
+                    <p class="text-sm text-gray-500 leading-relaxed">
+                        Kayıt olarak
+                        <a href="#" class="text-blue-600 hover:underline">Kullanım Şartları</a>
+                        ve
+                        <a href="#" class="text-blue-600 hover:underline">Gizlilik Politikası</a>
+                        'nı kabul etmiş olursunuz.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let userType = 'hasta';
+        let showPassword = false;
+
+        function selectUserType(type) {
+            userType = type;
+            
+            const hastaCard = document.getElementById('hasta-card');
+            const doktorCard = document.getElementById('doktor-card');
+            const doktorFields = document.getElementById('doktor-fields');
+            const submitBtn = document.getElementById('submit-btn');
+            const drIdInput = document.getElementById('drId');
+
+            if (type === 'hasta') {
+                hastaCard.className = 'relative cursor-pointer rounded-2xl border-2 card-selected-blue p-8 transition-all duration-200';
+                doktorCard.className = 'relative cursor-pointer rounded-2xl border-2 card-unselected p-8 transition-all duration-200';
+                
+                hastaCard.innerHTML = '<div class="absolute top-0 left-0 w-full h-1 bg-blue-500 rounded-t-2xl"></div><div class="text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 bg-blue-100"><svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg></div><h3 class="text-xl font-semibold text-gray-900 mb-2">Hasta</h3><p class="text-gray-600 text-sm">İlaç takibi yapın, doktorlarınızla iletişim kurun</p></div>';
+                
+                doktorCard.innerHTML = '<div class="text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 bg-gray-100"><svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div><h3 class="text-xl font-semibold text-gray-900 mb-2">Doktor</h3><p class="text-gray-600 text-sm">Hastalarınızı takip edin, ilaç önerileri yapın</p></div>';
+                
+                doktorFields.style.display = 'none';
+                submitBtn.textContent = 'Hasta Hesabı Oluştur ve Profilime Git';
+                drIdInput.removeAttribute('required');
+                
+            } else {
+                hastaCard.className = 'relative cursor-pointer rounded-2xl border-2 card-unselected p-8 transition-all duration-200';
+                doktorCard.className = 'relative cursor-pointer rounded-2xl border-2 card-selected-green p-8 transition-all duration-200';
+                
+                hastaCard.innerHTML = '<div class="text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 bg-gray-100"><svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg></div><h3 class="text-xl font-semibold text-gray-900 mb-2">Hasta</h3><p class="text-gray-600 text-sm">İlaç takibi yapın, doktorlarınızla iletişim kurun</p></div>';
+                
+                doktorCard.innerHTML = '<div class="absolute top-0 left-0 w-full h-1 bg-green-500 rounded-t-2xl"></div><div class="text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 bg-green-100"><svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div><h3 class="text-xl font-semibold text-gray-900 mb-2">Doktor</h3><p class="text-gray-600 text-sm">Hastalarınızı takip edin, ilaç önerileri yapın</p></div>';
+                
+                doktorFields.style.display = 'block';
+                doktorFields.className = 'border-t border-gray-200 pt-6 animate-fadeIn';
+                submitBtn.textContent = 'Doktor Hesabı Oluştur ve Panelime Git';
+                drIdInput.setAttribute('required', 'required');
+            }
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('sifre');
+            const eyeIcon = document.getElementById('eye-icon');
+            
+            showPassword = !showPassword;
+            
+            if (showPassword) {
+                passwordInput.type = 'text';
+                eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>';
+            }
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const data = {
+                ad: formData.get('ad'),
+                soyad: formData.get('soyad'),
+                email: formData.get('email'),
+                sifre: formData.get('sifre'),
+                drId: formData.get('drId'),
+                userType: userType
+            };
+            
+            // Form validasyonu
+            if (!data.ad || !data.soyad || !data.email || !data.sifre) {
+                alert('Lütfen tüm zorunlu alanları doldurun.');
+                return;
+            }
+            
+            if (userType === 'doktor' && !data.drId) {
+                alert('Lütfen Doktor ID\'nizi girin.');
+                return;
+            }
+            
+            if (data.sifre.length < 8) {
+                alert('Şifre en az 8 karakter olmalıdır.');
+                return;
+            }
+            
+            console.log('Kayıt bilgileri:', data);
+            
+            // Kayıt işlemi başarılı olduktan sonra kullanıcı tipine göre yönlendirme
+            if (userType === 'doktor') {
+                alert('Doktor hesabınız başarıyla oluşturuldu! Panele yönlendiriliyorsunuz...');
+                // window.location.href = 'doktor-paneli.html';
+            } else {
+                alert('Hesabınız başarıyla oluşturuldu! Profilinize yönlendiriliyorsunuz...');
+                // window.location.href = 'profilim.html';
+            }
+        }
+
+        function handleGirisYap() {
+            // Giriş yap sayfasına yönlendirme
+            console.log('Giriş yap sayfasına yönlendiriliyor...');
+            // window.location.href = 'giris-yap.html';
+        }
+
+        function handleAnaSayfa() {
+            // Ana sayfaya yönlendirme
+            console.log('Ana sayfaya yönlendiriliyor...');
+            // window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

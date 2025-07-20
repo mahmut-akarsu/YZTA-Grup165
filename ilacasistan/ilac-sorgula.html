@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İlaçAsistan - İlaç Sorgula | Hızlı İlaç Bilgi ve Takip</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .logo-icon::before {
+            content: '+';
+            color: #ff4757;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        nav a:hover, nav a.active {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .login-btn {
+            background: rgba(255,255,255,0.15) !important;
+            border: 1px solid rgba(255,255,255,0.3) !important;
+        }
+
+        .login-btn:hover {
+            background: rgba(255,255,255,0.3) !important;
+            border-color: rgba(255,255,255,0.5) !important;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 120px 0 60px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            top: -50px;
+            left: -50px;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+            bottom: -100px;
+            right: -100px;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Search Section */
+        .search-section {
+            background: white;
+            margin: -40px auto 40px;
+            max-width: 800px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            padding: 3rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-section h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .search-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 2rem;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus-within {
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 1.1rem;
+            padding: 10px;
+            outline: none;
+            color: #333;
+        }
+
+        .search-input::placeholder {
+            color: #999;
+        }
+
+        .icon-button {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            min-width: 50px;
+        }
+
+        .icon-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
+        }
+
+        .icon-button svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .ara-button {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 25px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .ara-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(238, 90, 36, 0.4);
+        }
+
+        /* Camera Section */
+        .camera-section {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        #kamera-video {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-top: 20px;
+        }
+
+        .camera-info {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        /* Drug Info Section */
+        .drug-info-section {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin: 2rem 0;
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .drug-info-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+        }
+
+        .drug-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .drug-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-right: 1rem;
+        }
+
+        .drug-details h3 {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .drug-description {
+            font-size: 1.1rem;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        /* Add Form */
+        .add-form {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px dashed #ddd;
+            margin-top: 2rem;
+        }
+
+        .add-form h4 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+
+        .form-group select,
+        .form-group input {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .add-drug-button {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            border: none;
+            border-radius: 15px;
+            padding: 15px 30px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .add-drug-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(67, 233, 123, 0.4);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .quick-actions h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .action-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .action-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-card p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Alternative colors for action cards */
+        .action-card:nth-child(2) {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        .action-card:nth-child(3) {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+
+        .action-card:nth-child(4) {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #3498db;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section ul li a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: #3498db;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #34495e;
+            color: #95a5a6;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 9999;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+
+            .page-header {
+                padding: 100px 0 50px;
+            }
+
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+
+            .search-section {
+                margin: -20px 20px 20px;
+                padding: 2rem;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon"></div>
+                    İlaçAsistan
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Ana Sayfa</a></li>
+                        <li><a href="hakkinda.html">Hakkında</a></li>
+                        <li><a href="ilac-sorgula.html" class="active">İlaç Sorgula</a></li>
+                        <li><a href="profilim.html">Profilim</a></li>
+                        <li><a href="iletisim.html">İletişim</a></li>
+                        <li><a href="login.html" class="login-btn">Giriş Yap</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>İlaç Sorgula</h1>
+            <p>İlaç bilgilerini arayın ve güvenli kullanım için takibe ekleyin</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Search Section -->
+        <section class="search-section fade-in">
+            <h2>
+                <div class="search-icon">🔍</div>
+                İLAÇ ARA
+            </h2>
+            
+            <div class="search-box">
+                <input type="text" class="search-input" id="ilacInput" placeholder="İlaç ismini girin (örn: Parol, Aspirin, Augmentin)..." />
+                <button class="icon-button" onclick="kameraAc()" title="Kamera ile İlaç Tara">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M3 7h4l1.5-2h7L17 7h4v12H3V7z" />
+                        <circle cx="12" cy="13" r="3" />
+                    </svg>
+                </button>
+                <button class="ara-button" onclick="ilacAra()">Ara</button>
+            </div>
+
+            <div class="camera-section">
+                <video id="kamera-video" autoplay style="display: none;" width="300" height="200"></video>
+                <div class="camera-info" id="camera-info" style="display: none;">
+                    📸 Kamera aktif - İlaç kutusunu kameraya gösterin
+                </div>
+            </div>
+        </section>
+
+        <!-- Drug Info Section -->
+        <section class="drug-info-section" id="ilac-bilgi-kutusu">
+            <div class="drug-header">
+                <div class="drug-icon">💊</div>
+                <div class="drug-details">
+                    <h3 id="ilac-adi"></h3>
+                </div>
+            </div>
+            
+            <div class="drug-description" id="ilac-aciklama"></div>
+
+            <div class="add-form">
+                <h4>📅 İlaç Takibine Ekle</h4>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="gun">Kullanım Günü:</label>
+                        <select id="gun">
+                            <option value="Her Gün">Her Gün</option>
+                            <option value="Pazartesi">Pazartesi</option>
+                            <option value="Salı">Salı</option>
+                            <option value="Çarşamba">Çarşamba</option>
+                            <option value="Perşembe">Perşembe</option>
+                            <option value="Cuma">Cuma</option>
+                            <option value="Cumartesi">Cumartesi</option>
+                            <option value="Pazar">Pazar</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="saat">Kullanım Saati:</label>
+                        <input type="time" id="saat" />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="doz">Doz Miktarı:</label>
+                        <select id="doz">
+                            <option value="1 tablet">1 tablet</option>
+                            <option value="2 tablet">2 tablet</option>
+                            <option value="1 kapsül">1 kapsül</option>
+                            <option value="2 kapsül">2 kapsül</option>
+                            <option value="5 ml">5 ml</option>
+                            <option value="10 ml">10 ml</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="yemek">Yemek ile İlişki:</label>
+                        <select id="yemek">
+                            <option value="Aç karnına">Aç karnına</option>
+                            <option value="Yemekten önce">Yemekten önce</option>
+                            <option value="Yemekten sonra">Yemekten sonra</option>
+                            <option value="Yemek ile birlikte">Yemek ile birlikte</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="add-drug-button" onclick="ilacEkle()">
+                    ➕ İlaçlara Ekle
+                </button>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="quick-actions fade-in">
+            <h3>⚡ Hızlı Erişim</h3>
+            <div class="action-grid">
+                <a href="#" class="action-card" onclick="showCalendar()">
+                    <h4>📅 İlaç Takvimi</h4>
+                    <p>Günlük ilaç planını görüntüle</p>
+                </a>
+                
+                <a href="#" class="action-card" onclick="showReports()">
+                    <h4>📈 Raporlarım</h4>
+                    <p>Kullanım istatistikleri ve raporlar</p>
+                </a>
+                
+                <a href="#" class="action-card" onclick="showInteractions()">
+                    <h4>⚠️ Etkileşim Kontrolü</h4>
+                    <p>İlaç uyumluluğunu kontrol et</p>
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>İlaçAsistan</h3>
+                    <p>Güvenli ilaç kullanımı için en gelişmiş dijital asistanınız. Sağlığınız bizim önceliğimiz.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hızlı Linkler</h3>
+                    <ul>
+                        <li><a href="index.html">Ana Sayfa</a></li>
+                        <li><a href="hakkinda.html">Hakkında</a></li>
+                        <li><a href="ilac-sorgula.html">İlaç Sorgula</a></li>
+                        <li><a href="profilim.html">Profilim</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Destek</h3>
+                    <ul>
+                        <li><a href="sss.html">SSS</a></li>
+                        <li><a href="iletisim.html">İletişim</a></li>
+                        <li><a href="kullanim-kilavuzu.html">Kullanım Kılavuzu</a></li>
+                        <li><a href="gizlilik-politikasi.html">Gizlilik Politikası</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>İletişim</h3>
+                    <ul>
+                        <li>📧 info@ilacasistan.com</li>
+                        <li>📞 +90 (212) 123 45 67</li>
+                        <li>📍 İstanbul, Türkiye</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 İlaçAsistan. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Notification function
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            
+            if (type === 'error') {
+                notification.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a24)';
+            } else {
+                notification.style.background = 'linear-gradient(135deg, #43e97b, #38f9d7)';
+            }
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Camera functionality
+        function kameraAc() {
+            const video = document.getElementById('kamera-video');
+            const cameraInfo = document.getElementById('camera-info');
+            
+            video.style.display = 'block';
+            cameraInfo.style.display = 'block';
+
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function (stream) {
+                        video.srcObject = stream;
+                        showNotification('Kamera başarıyla açıldı! İlaç kutusunu gösterin.');
+                    })
+                    .catch(function (err) {
+                        showNotification('Kamera erişimi reddedildi veya desteklenmiyor.', 'error');
+                        video.style.display = 'none';
+                        cameraInfo.style.display = 'none';
+                        console.error(err);
+                    });
+            } else {
+                showNotification("Tarayıcınız kamera özelliğini desteklemiyor.", 'error');
+                video.style.display = 'none';
+                cameraInfo.style.display = 'none';
+            }
+        }
+
+        // Drug search functionality
+        function ilacAra() {
+            const ilacAdi = document.getElementById('ilacInput').value.trim();
+            if (!ilacAdi) {
+                showNotification("Lütfen bir ilaç ismi girin.", 'error');
+                return;
+            }
+
+            // Sample drug information
+            const drugInfo = {
+                'parol': {
+                    name: 'Parol 500mg',
+                    description: 'Parol, parasetamol etken maddesi içeren bir ağrı kesici ve ateş düşürücü ilaçtır. Hafif ve orta şiddetteki ağrıların tedavisinde kullanılır. Yetişkinlerde günde en fazla 4 gram (8 tablet) alınmalıdır. Karaciğer hastalığı olan kişiler dikkatli kullanmalıdır.'
+                },
+                'aspirin': {
+                    name: 'Aspirin 100mg',
+                    description: 'Aspirin, asetilsalisilik asit etken maddeli bir ilaçtır. Kalp krizi ve felç riskini azaltmak için düşük dozda kullanılır. Kan sulandırıcı etkisi vardır. Mide hassasiyeti olanlar dikkatli kullanmalıdır.'
+                },
+                'augmentin': {
+                    name: 'Augmentin 1g',
+                    description: 'Augmentin, amoksisilin ve klavulanik asit kombinasyonu içeren bir antibiyotiktir. Çeşitli bakteriyel enfeksiyonların tedavisinde kullanılır. Reçeteye bağlı bir ilaçtır ve doktor önerisi olmadan kullanılmamalıdır.'
+                }
+            };
+
+            const searchKey = ilacAdi.toLowerCase();
+            const drug = drugInfo[searchKey] || {
+                name: ilacAdi,
+                description: `${ilacAdi} hakkında detaylı bilgi alabilmek için eczacınıza danışınız. Bu ilaç düzenli takip gerektiren bir ilaç olabilir. Kullanım talimatlarını mutlaka okuyunuz ve doktor önerileri doğrultusunda kullanınız.`
+            };
+
+            document.getElementById('ilac-adi').innerText = drug.name;
+            document.getElementById('ilac-aciklama').innerText = drug.description;
+            document.getElementById('ilac-bilgi-kutusu').style.display = 'block';
+            
+            // Scroll to drug info section
+            document.getElementById('ilac-bilgi-kutusu').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+
+            showNotification(`${drug.name} bilgileri başarıyla yüklendi!`);
+        }
+
+        // Add drug to list
+        function ilacEkle() {
+            const ilac = document.getElementById('ilac-adi').innerText;
+            const gun = document.getElementById('gun').value;
+            const saat = document.getElementById('saat').value;
+            const doz = document.getElementById('doz').value;
+            const yemek = document.getElementById('yemek').value;
+
+            if (!saat) {
+                showNotification("Lütfen bir saat seçin.", 'error');
+                return;
+            }
+
+            // Create drug entry
+            const drugEntry = {
+                name: ilac,
+                day: gun,
+                time: saat,
+                dose: doz,
+                meal: yemek,
+                addedDate: new Date().toLocaleDateString('tr-TR'),
+                id: Date.now() // Unique ID
+            };
+
+            // Get existing drugs from localStorage
+            let savedDrugs = JSON.parse(localStorage.getItem('userDrugs') || '[]');
+            
+            // Add new drug
+            savedDrugs.push(drugEntry);
+            
+            // Save to localStorage
+            localStorage.setItem('userDrugs', JSON.stringify(savedDrugs));
+
+            // If day is "Her Gün", add to multiple dates in calendar
+            if (gun === 'Her Gün') {
+                addDrugToCalendarDates(drugEntry);
+            } else {
+                addDrugToSpecificDay(drugEntry);
+            }
+
+            showNotification(`✅ ${ilac} başarıyla ilaç listenize eklendi!\n📅 ${gun} günü saat ${saat}'te ${doz} ${yemek} alınacak.`);
+            
+            // Reset form
+            document.getElementById('saat').value = '';
+            document.getElementById('gun').selectedIndex = 0;
+            document.getElementById('doz').selectedIndex = 0;
+            document.getElementById('yemek').selectedIndex = 0;
+        }
+
+        // Add drug to calendar for daily use
+        function addDrugToCalendarDates(drugEntry) {
+            let calendarData = JSON.parse(localStorage.getItem('calendarDrugs') || '{}');
+            
+            // Add to next 30 days for "Her Gün" option
+            const today = new Date();
+            for (let i = 0; i < 30; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+                const dateKey = date.toISOString().split('T')[0];
+                
+                if (!calendarData[dateKey]) {
+                    calendarData[dateKey] = [];
+                }
+                
+                calendarData[dateKey].push({
+                    name: drugEntry.name,
+                    time: drugEntry.time,
+                    dose: drugEntry.dose,
+                    meal: drugEntry.meal
+                });
+            }
+            
+            localStorage.setItem('calendarDrugs', JSON.stringify(calendarData));
+        }
+
+        // Add drug to specific day of week
+        function addDrugToSpecificDay(drugEntry) {
+            let calendarData = JSON.parse(localStorage.getItem('calendarDrugs') || '{}');
+            
+            const dayMap = {
+                'Pazartesi': 1, 'Salı': 2, 'Çarşamba': 3, 'Perşembe': 4,
+                'Cuma': 5, 'Cumartesi': 6, 'Pazar': 0
+            };
+            
+            const targetDay = dayMap[drugEntry.day];
+            const today = new Date();
+            
+            // Add to next 4 weeks for the specific day
+            for (let week = 0; week < 4; week++) {
+                const date = new Date(today);
+                const daysUntilTarget = (targetDay - today.getDay() + 7) % 7;
+                date.setDate(today.getDate() + daysUntilTarget + (week * 7));
+                
+                const dateKey = date.toISOString().split('T')[0];
+                
+                if (!calendarData[dateKey]) {
+                    calendarData[dateKey] = [];
+                }
+                
+                calendarData[dateKey].push({
+                    name: drugEntry.name,
+                    time: drugEntry.time,
+                    dose: drugEntry.dose,
+                    meal: drugEntry.meal
+                });
+            }
+            
+            localStorage.setItem('calendarDrugs', JSON.stringify(calendarData));
+        }
+
+        // Quick action functions
+        function showCalendar() {
+            showNotification("İlaç takvimi açılıyor...");
+            // Here you would redirect to calendar page
+            setTimeout(() => {
+                window.location.href = 'takvim.html';
+            }, 1000);
+        }
+
+        function showReports() {
+            showNotification("Raporlar sayfası açılıyor...");
+            setTimeout(() => {
+                window.location.href = 'raporlar.html';
+            }, 1000);
+        }
+
+        function showInteractions() {
+            showNotification("Etkileşim kontrolü başlatılıyor...");
+            setTimeout(() => {
+                window.location.href = 'etkilesim.html';
+            }, 1000);
+        }
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Header background on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(102, 126, 234, 0.95)';
+            } else {
+                header.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            }
+        });
+
+        // Enhanced search with Enter key
+        document.getElementById('ilacInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                ilacAra();
+            }
+        });
+
+        // Auto-focus on search input
+        window.addEventListener('load', () => {
+            document.getElementById('ilacInput').focus();
+        });
+
+        // Close camera when clicking outside
+        document.addEventListener('click', function(e) {
+            const video = document.getElementById('kamera-video');
+            const cameraButton = document.querySelector('.icon-button');
+            
+            if (video.style.display === 'block' && 
+                !video.contains(e.target) && 
+                !cameraButton.contains(e.target)) {
+                
+                // Stop camera stream
+                if (video.srcObject) {
+                    video.srcObject.getTracks().forEach(track => track.stop());
+                }
+                video.style.display = 'none';
+                document.getElementById('camera-info').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

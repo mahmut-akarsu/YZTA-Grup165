@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İlaçAsistan - Güvenli İlaç Takibi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            margin: 0;
+        }
+
+        .nav-link {
+            color: #555;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #007bff;
+            background: #e7f3ff;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,123,255,0.4);
+        }
+
+        .mobile-menu {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #555;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .page {
+            display: none;
+            padding-top: 80px;
+            min-height: 100vh;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(0,123,255,0.9) 0%, rgba(0,86,179,0.9) 100%);
+            color: white;
+            text-align: center;
+            padding: 5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="white" opacity="0.1"/><circle cx="80" cy="40" r="1" fill="white" opacity="0.1"/><circle cx="40" cy="80" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 1.2rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(40,167,69,0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(40,167,69,0.4);
+        }
+
+        .cta-button.secondary {
+            background: transparent;
+            border: 2px solid white;
+            box-shadow: 0 8px 25px rgba(255,255,255,0.2);
+        }
+
+        .cta-button.secondary:hover {
+            background: white;
+            color: #007bff;
+            box-shadow: 0 12px 35px rgba(255,255,255,0.3);
+        }
+
+        /* Features */
+        .features {
+            padding: 4rem 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid rgba(0,123,255,0.1);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0,123,255,0.2);
+            border-color: rgba(0,123,255,0.3);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #007bff;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .feature-description {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Card Styles */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .card-header {
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.15);
+            transform: translateY(-1px);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        /* Table */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .table th,
+        .table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .table tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            display: none;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #007bff;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .mobile-menu {
+                display: block;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: white;
+                flex-direction: column;
+                justify-content: flex-start;
+                padding: 2rem;
+                transition: left 0.3s ease;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .nav-links li {
+                margin-bottom: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon">💊</div>
+                <a href="#" class="logo-text" onclick="showPage('home')">İlaçAsistan</a>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#" class="nav-link active" onclick="showPage('home')">Ana Sayfa</a></li>
+                <li><a href="#" class="nav-link" onclick="showPage('about')">Hakkında</a></li>
+                <li><a href="#" class="nav-link" onclick="showPage('search')">İlaç Sorgula</a></li>
+                <li><a href="#" class="nav-link" onclick="showPage('profile')">Profilim</a></li>
+                <li><a href="#" class="btn-primary" onclick="showPage('register')">Kayıt Ol</a></li>
+                <li><a href="#" class="btn-primary" onclick="showPage('login')">Giriş Yap</a></li>
+            </ul>
+            <button class="mobile-menu" onclick="toggleMobileMenu()">☰</button>
+        </div>
+    </nav>
+
+    <!-- Ana Sayfa -->
+    <div id="home" class="page active">
+        <section class="hero">
+            <div class="container">
+                <h1>İlaçAsistan</h1>
+                <p class="hero-subtitle">Güvenli İlaç Takibi ve Etkileşim Kontrolü</p>
+                <p class="hero-description">
+                    İlaç etkileşimlerini kontrol edin, kişisel ilaç takibinizi yapın ve güvenli sağlık yönetimi sağlayın.
+                </p>
+                <a href="#" class="cta-button" onclick="showPage('login')">Hemen Başlayın</a>
+                <a href="#" class="cta-button secondary" onclick="showPage('search')">İlaç Sorgula</a>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <h2 class="section-title">Özellikler</h2>
+                <p class="section-subtitle">Sağlığınız için gerekli tüm araçlar</p>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔍</div>
+                        <h3 class="feature-title">İlaç Sorgulama</h3>
+                        <p class="feature-description">İlaç adı ile arama yapın veya kamera ile taratarak detaylı bilgi alın.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">⚠️</div>
+                        <h3 class="feature-title">Etkileşim Kontrolü</h3>
+                        <p class="feature-description">İlaçlarınız arasındaki potansiyel etkileşimleri anında tespit edin.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">📋</div>
+                        <h3 class="feature-title">Kişisel Takip</h3>
+                        <p class="feature-description">Kullandığınız ilaçları kaydedip takip edin, hatırlatıcılar alın.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3 class="feature-title">Güvenli Saklama</h3>
+                        <p class="feature-description">Tüm sağlık verileriniz güvenle saklanır ve korunur.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3 class="feature-title">Mobil Uyumlu</h3>
+                        <p class="feature-description">Tüm cihazlarda sorunsuz çalışan responsive tasarım.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3 class="feature-title">Raporlama</h3>
+                        <p class="feature-description">Detaylı ilaç kullanım raporları ve istatistikleri.</p>
+                    </div>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-card">
+                        <span class="stat-number">50,000+</span>
+                        <span class="stat-label">İlaç Veritabanı</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">1M+</span>
+                        <span class="stat-label">Etkileşim Kontrolü</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">99.9%</span>
+                        <span class="stat-label">Güvenilirlik</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Kesintisiz Hizmet</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Hakkında Sayfası -->
+    <div id="about" class="page">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="card-title">Hakkında</h1>
+                    <p class="card-subtitle">İlaçAsistan platformu hakkında</p>
+                </div>
+                
+                <h3>Misyonumuz</h3>
+                <p>İlaçAsistan, ilaç güvenliğini artırmak ve hastaların daha bilinçli ilaç kullanımını desteklemek amacıyla geliştirilmiş bir platformdur.</p>
+                
+                <h3>Vizyonumuz</h3>
+                <p>Herkesin güvenli ilaç kullanımına erişebileceği bir dünya yaratmak.</p>
+                
+                <h3>Özellikler</h3>
+                <ul>
+                    <li>Kapsamlı ilaç veritabanı</li>
+                    <li>Etkileşim kontrolü</li>
+                    <li>Kişisel ilaç takibi</li>
+                    <li>Kamera ile ilaç tanıma</li>
+                    <li>Güvenli veri saklama</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- İlaç Sorgula Sayfası -->
+    <div id="search" class="page">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="card-title">İlaç Sorgula</h1>
+                    <p class="card-subtitle">İlaç adı ile arama yapın veya kamera ile taratın</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">İlaç Adı</label>
+                    <input type="text" class="form-control" id="medicineInput" placeholder="İlaç adını yazın...">
+                </div>
+                
+                <button class="btn btn-primary" onclick="searchMedicine()">🔍 Ara</button>
+                <button class="btn btn-secondary" onclick="openCamera()">📷 Kamera ile Tarat</button>
+                
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>İlaç aranıyor...</p>
+                </div>
+                
+                <div id="searchResults" style="display: none;">
+                    <div class="card">
+                        <h3 id="medicineName">İlaç Adı</h3>
+                        <p><strong>Etken Madde:</strong> <span id="activeIngredient"></span></p>
+                        <p><strong>Üretici:</strong> <span id="manufacturer"></span></p>
+                        <p><strong>Kullanım:</strong> <span id="usage"></span></p>
+                        <p><strong>Dozaj:</strong> <span id="dosage"></span></p>
+                        <p><strong>Yan Etkiler:</strong> <span id="sideEffects"></span></p>
+                        
+                        <button class="btn btn-success" onclick="addToMyMedicines()">➕ İlaçlarıma Ekle</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profil Sayfası -->
+    <div id="profile" class="page">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="card-title">Profilim</h1>
+                    <p class="card-subtitle">Kişisel bilgileriniz ve ilaç listeniz</p>
+                </div>
+                
+                <div id="loginRequired">
+                    <div class="alert alert-warning">
+                        <strong>Uyarı:</strong> Bu sayfaya erişmek için giriş yapmalısınız.
+                    </div>
+                    <a href="#" class="btn btn-primary" onclick="showPage('login')">Giriş Yap</a>
+                </div>
+                
+                <div id="profileContent" style="display: none;">
+                    <h3>Kullanıcı Bilgileri</h3>
+                    <p><strong>Ad Soyad:</strong> <span id="userName">Demo Kullanıcı</span></p>
+                    <p><strong>E-posta:</strong> <span id="userEmail">demo@ilacasistan.com</span></p>
+                    
+                    <h3>Kayıtlı İlaçlarım</h3>
+                    <table class="table" id="medicinesTable">
+                        <thead>
+                            <tr>
+                                <th>İlaç Adı</th>
+                                <th>Dozaj</th>
+                                <th>Sıklık</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4">Henüz ilaç eklenmemiş</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kayıt Ol Sayfası -->
+    <div id="register" class="page">
+        <div class="container">
+            <div class="card" style="max-width: 500px; margin: 0 auto;">
+                <div class="card-header">
+                    <h1 class="card-title">Kayıt Ol</h1>
+                    <p class="card-subtitle">Yeni hesap oluşturun</p>
+                </div>
+                
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label class="form-label">Ad</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Soyad</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">E-posta</label>
+                        <input type="email" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Şifre</label>
+                        <input type="password" class="form-control" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success" style="width: 100%;">Kayıt Ol</button>
+                </form>
+                
+                <p style="text-align: center; margin-top: 1rem;">
+                    Zaten hesabınız var mı? <a href="#" onclick="showPage('login')">Giriş yapın</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Giriş Yap Sayfası -->
+    <div id="login" class="page">
+        <div class="container">
+            <div class="card" style="max-width: 400px; margin: 0 auto;">
+                <div class="card-header">
+                    <h1 class="card-title">Giriş Yap</h1>
+                    <p class="card-subtitle">Hesabınıza giriş yapın</p>
+                </div>
+                
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label">E-posta</label>
+                        <input type="email" class="form-control" id="loginEmail" value="demo@ilacasistan.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Şifre</label>
+                        <input type="password" class="form-control" id="loginPassword" value="Demo123!" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Giriş Yap</button>
+                </form>
+                
+                <div class="alert alert-info" style="margin-top: 1rem;">
+                    <strong>Demo Hesap:</strong><br>
+                    E-posta: demo@ilacasistan.com<br>
+                    Şifre: Demo123!
+                </div>
+                
+                <p style="text-align: center; margin-top: 1rem;">
+                    Hesabınız yok mu? <a href="#" onclick="showPage('register')">Kayıt olun</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 İlaçAsistan. Tüm hakları saklıdır.</p>
+            <p>Sağlık profesyonellerinizle görüşmeyi unutmayın.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Global değişkenler
+        let currentUser = null;
+        let userMedicines = [];
+        
+        // İlaç veritabanı
+        const medicineDatabase = {
+            'parol': {
+                name: 'Parol',
+                activeIngredient: 'Parasetamol 500mg',
+                manufacturer: 'Atabay İlaç',
+                usage: 'Ağrı kesici, ateş düşürücü',
+                dosage: 'Günde 3-4 kez 1 tablet',
+                sideEffects: 'Nadir: Mide bulantısı, alerjik reaksiyonlar'
+            },
+            'aspirin': {
+                name: 'Aspirin',
+                activeIngredient: 'Asetilsalisilik Asit 500mg',
+                manufacturer: 'Bayer',
+                usage: 'Ağrı kesici, ateş düşürücü, kan sulandırıcı',
+                dosage: 'Günde 1-3 kez 1 tablet',
+                sideEffects: 'Mide irritasyonu, kanama riski'
+            },
+            'nurofen': {
+                name: 'Nurofen',
+                activeIngredient: 'İbuprofen 400mg',
+                manufacturer: 'Reckitt Benckiser',
+                usage: 'Ağrı kesici, ateş düşürücü, antiinflamatuar',
+                dosage: 'Günde 3-4 kez 1 tablet',
+                sideEffects: 'Mide bulantısı, baş dönmesi'
+            }
+        };
+
+        // Sayfa geçiş fonksiyonu
+        function showPage(pageId) {
+            // Tüm sayfaları gizle
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Nav linklerden active class'ını kaldır
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Seçilen sayfayı göster
+            document.getElementById(pageId).classList.add('active');
+            
+        }

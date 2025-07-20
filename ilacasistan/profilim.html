@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İlaçAsistan - Profilim | Kişisel Bilgiler ve İlaç Takibi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .logo-icon::before {
+            content: '+';
+            color: #ff4757;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        nav a:hover, nav a.active {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .login-btn {
+            background: rgba(255,255,255,0.15) !important;
+            border: 1px solid rgba(255,255,255,0.3) !important;
+        }
+
+        .login-btn:hover {
+            background: rgba(255,255,255,0.3) !important;
+            border-color: rgba(255,255,255,0.5) !important;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 120px 0 60px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+            top: -150px;
+            right: -150px;
+            animation: float 12s ease-in-out infinite;
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 50%;
+            bottom: -100px;
+            left: -100px;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(180deg); }
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 40px 0;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            height: fit-content;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .profile-avatar::after {
+            content: '📷';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: white;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .profile-name {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-id {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .profile-status {
+            display: inline-block;
+            background: rgba(67, 233, 123, 0.2);
+            color: #28a745;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .profile-info {
+            margin-top: 2rem;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .edit-button {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+
+        .edit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(67, 233, 123, 0.4);
+        }
+
+        /* Drug Summary */
+        .drug-summary {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .drug-summary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+        }
+
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .summary-title {
+            font-size: 1.8rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Current Drugs */
+        .current-drugs {
+            margin-top: 2rem;
+        }
+
+        .drugs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .drugs-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .view-all-btn {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .view-all-btn:hover {
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+        }
+
+        .drug-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .drug-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .drug-item:hover {
+            background: white;
+            border-left-color: #43e97b;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .drug-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .drug-icon-small {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .drug-details {
+            flex: 1;
+        }
+
+        .drug-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.2rem;
+        }
+
+        .drug-schedule {
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .drug-time {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Quick Actions */
+        .quick-actions-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .action-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .action-card h4 {
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .action-card p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        /* Alternative colors for action cards */
+        .action-card:nth-child(2) {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+        }
+
+        .action-card:nth-child(3) {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        .action-card:nth-child(4) {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #3498db;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section ul li a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: #3498db;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #34495e;
+            color: #95a5a6;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .actions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Copy ID functionality */
+        .copy-id {
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .copy-id:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon"></div>
+                    İlaçAsistan
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="anasayfa.html">Ana Sayfa</a></li>
+                        <li><a href="hakkinda.html">Hakkında</a></li>
+                        <li><a href="ilac-sorgula.html">İlaç Sorgula</a></li>
+                        <li><a href="profilim.html" class="active">Profilim</a></li>
+                        <li><a href="iletisim.html">İletişim</a></li>
+                        <li><a href="login.html" class="login-btn">Giriş Yap</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>👤 Profilim</h1>
+            <p>Kişisel bilgileriniz ve ilaç takip durumunuz</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            
+            <!-- Profile Grid -->
+            <div class="profile-grid fade-in">
+                
+                <!-- Profile Card -->
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div class="profile-avatar" onclick="changeAvatar()">👨‍⚕️</div>
+                        <div class="profile-name" id="userName">Ahmet Yılmaz</div>
+                        <div class="profile-id">
+                            ID: <span class="copy-id" onclick="copyUserID()" title="Kopyalamak için tıklayın" id="userID">AY2025001</span>
+                        </div>
+                        <div class="profile-status">Aktif Kullanıcı</div>
+                    </div>
+
+                    <div class="profile-info">
+                        <div class="info-item">
+                            <span class="info-label">📧 E-posta:</span>
+                            <span class="info-value" id="userEmail">ahmet.yilmaz@email.com</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">📞 Telefon:</span>
+                            <span class="info-value" id="userPhone">+90 532 123 45 67</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">🎂 Doğum Tarihi:</span>
+                            <span class="info-value" id="userBirthDate">15 Mart 1985</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">👥 Kullanıcı Tipi:</span>
+                            <span class="info-value" id="userType">Hasta</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">📅 Kayıt Tarihi:</span>
+                            <span class="info-value" id="registerDate">10 Ocak 2025</span>
+                        </div>
+                    </div>
+
+                    <button class="edit-button" onclick="editProfile()">
+                        ✏️ Profili Düzenle
+                    </button>
+                </div>
+
+                <!-- Drug Summary -->
+                <div class="drug-summary">
+                    <div class="summary-header">
+                        <h2 class="summary-title">
+                            <div class="summary-icon">💊</div>
+                            İlaç Özeti
+                        </h2>
+                    </div>
+
+                    <div class="summary-stats">
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalDrugs">5</div>
+                            <div class="stat-label">Toplam İlaç</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="activeDrugs">3</div>
+                            <div class="stat-label">Aktif İlaç</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="dailyDoses">8</div>
+                            <div class="stat-label">Günlük Doz</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="complianceRate">87%</div>
+                            <div class="stat-label">Uyum Oranı</div>
+                        </div>
+                    </div>
+
+                    <div class="current-drugs">
+                        <div class="drugs-header">
+                            <h3 class="drugs-title">Aktif İlaçlarım</h3>
+                            <a href="secim-kontrol.html" class="view-all-btn">Tümünü Gör</a>
+                        </div>
+                        
+                        <div class="drug-list" id="drugList">
+                            <!-- Drugs will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <section class="quick-actions-section fade-in">
+                <h3 style="text-align: center; margin-bottom: 2rem; color: #333;">⚡ Hızlı İşlemler</h3>
+                <div class="actions-grid">
+                    <a href="ilac-sorgula.html" class="action-card">
+                        <h4>🔍 İlaç Ekle</h4>
+                        <p>Yeni ilaç ara ve ekle</p>
+                    </a>
+                    
+                    <a href="takvim.html" class="action-card">
+                        <h4>📅 Takvim</h4>
+                        <p>İlaç takvimini görüntüle</p>
+                    </a>
+                    
+                    <a href="raporlar.html" class="action-card">
+                        <h4>📈 Raporlar</h4>
+                        <p>İstatistik ve raporlar</p>
+                    </a>
+                    
+                    <a href="etkilesim.html" class="action-card">
+                        <h4>⚠️ Etkileşim</h4>
+                        <p>İlaç etkileşimi kontrol et</p>
+                    </a>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>İlaçAsistan</h3>
+                    <p>Güvenli ilaç kullanımı için en gelişmiş dijital asistanınız. Sağlığınız bizim önceliğimiz.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hızlı Linkler</h3>
+                    <ul>
+                        <li><a href="index.html">Ana Sayfa</a></li>
+                        <li><a href="hakkinda.html">Hakkında</a></li>
+                        <li><a href="ilac-sorgula.html">İlaç Sorgula</a></li>
+                        <li><a href="profilim.html">Profilim</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Destek</h3>
+                    <ul>
+                        <li><a href="sss.html">SSS</a></li>
+                        <li><a href="iletisim.html">İletişim</a></li>
+                        <li><a href="kullanim-kilavuzu.html">Kullanım Kılavuzu</a></li>
+                        <li><a href="gizlilik-politikasi.html">Gizlilik Politikası</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>İletişim</h3>
+                    <ul>
+                        <li>📧 info@ilacasistan.com</li>
+                        <li>📞 +90 (212) 123 45 67</li>
+                        <li>📍 İstanbul, Türkiye</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 İlaçAsistan. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Load user profile data
+        function loadProfileData() {
+            // Get user drugs from localStorage
+            const userDrugs = JSON.parse(localStorage.getItem('userDrugs') || '[]');
+            
+            // Sample profile data
+            const profileData = {
+                name: 'Ahmet Yılmaz',
+                email: 'ahmet.yilmaz@email.com',
+                phone: '+90 532 123 45 67',
+                birthDate: '15 Mart 1985',
+                registerDate: '10 Ocak 2025',
+                userID: 'AY2025001'
+            };
+
+            // Determine user type based on ID
+            const userType = determineUserType(profileData.userID);
+
+            // Update profile information
+            document.getElementById('userName').textContent = profileData.name;
+            document.getElementById('userEmail').textContent = profileData.email;
+            document.getElementById('userPhone').textContent = profileData.phone;
+            document.getElementById('userBirthDate').textContent = profileData.birthDate;
+            document.getElementById('userType').textContent = userType;
+            document.getElementById('registerDate').textContent = profileData.registerDate;
+            document.getElementById('userID').textContent = profileData.userID;
+
+            // Update avatar based on user type
+            updateAvatarByUserType(userType);
+
+            // Update drug statistics
+            const activeDrugs = userDrugs.filter(drug => drug.status !== 'ended');
+            const totalDoses = activeDrugs.reduce((total, drug) => {
+                if (drug.day === 'Her Gün') return total + 1;
+                return total + (1/7); // Weekly drugs count as 1/7 per day
+            }, 0);
+
+            document.getElementById('totalDrugs').textContent = userDrugs.length;
+            document.getElementById('activeDrugs').textContent = activeDrugs.length;
+            document.getElementById('dailyDoses').textContent = Math.round(totalDoses);
+
+            // Load drug list
+            loadDrugList(activeDrugs.slice(0, 5)); // Show first 5 active drugs
+        }
+
+        // Determine user type based on ID pattern
+        function determineUserType(userID) {
+            // ID format examples:
+            // DR2025001 = Doktor
+            // AY2025001 = Hasta (any other pattern)
+            
+            if (userID.startsWith('DR')) {
+                return 'Doktor';
+            } else {
+                return 'Hasta';
+            }
+        }
+
+        // Update avatar based on user type
+        function updateAvatarByUserType(userType) {
+            const avatar = document.querySelector('.profile-avatar');
+            const savedAvatar = localStorage.getItem('userAvatar');
+            
+            if (savedAvatar) {
+                avatar.textContent = savedAvatar;
+            } else {
+                // Set default avatar based on user type
+                if (userType === 'Doktor') {
+                    avatar.textContent = '👨‍⚕️';
+                } else {
+                    avatar.textContent = '👤';
+                }
+            }
+        }
+
+        // Load drug list
+        function loadDrugList(drugs) {
+            const drugList = document.getElementById('drugList');
+            
+            if (drugs.length === 0) {
+                drugList.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #666;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">💊</div>
+                        <p>Henüz aktif ilaç bulunmuyor</p>
+                        <a href="ilac-sorgula.html" style="color: #667eea; text-decoration: none;">
+                            İlaç eklemek için tıklayın →
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            drugList.innerHTML = drugs.map(drug => `
+                <div class="drug-item">
+                    <div class="drug-info">
+                        <div class="drug-icon-small">💊</div>
+                        <div class="drug-details">
+                            <div class="drug-name">${drug.name}</div>
+                            <div class="drug-schedule">${drug.day} - ${drug.dose} ${drug.meal}</div>
+                        </div>
+                    </div>
+                    <div class="drug-time">${drug.time}</div>
+                </div>
+            `).join('');
+        }
+
+        // Copy user ID to clipboard
+        function copyUserID() {
+            const userID = document.getElementById('userID').textContent;
+            navigator.clipboard.writeText(userID).then(() => {
+                // Show temporary feedback
+                const element = document.getElementById('userID');
+                const originalText = element.textContent;
+                element.textContent = 'Kopyalandı!';
+                element.style.color = '#28a745';
+                
+                setTimeout(() => {
+                    element.textContent = originalText;
+                    element.style.color = '';
+                }, 2000);
+            }).catch(() => {
+                alert('ID kopyalanamadı: ' + userID);
+            });
+        }
+
+        // Change avatar
+        function changeAvatar() {
+            const userType = document.getElementById('userType').textContent;
+            let avatars;
+            
+            if (userType === 'Doktor') {
+                avatars = ['👨‍⚕️', '👩‍⚕️', '🧑‍⚕️', '👨‍🔬', '👩‍🔬', '🥼'];
+            } else {
+                avatars = ['👤', '👨', '👩', '🧑', '👦', '👧'];
+            }
+            
+            const currentAvatar = document.querySelector('.profile-avatar').textContent;
+            let currentIndex = avatars.indexOf(currentAvatar);
+            currentIndex = (currentIndex + 1) % avatars.length;
+            
+            document.querySelector('.profile-avatar').textContent = avatars[currentIndex];
+            
+            // Save to localStorage
+            localStorage.setItem('userAvatar', avatars[currentIndex]);
+        }
+
+        // Edit profile
+        function editProfile() {
+            alert('Profil düzenleme özelliği yakında eklenecek!\n\nMevcut bilgiler:\n• Ad Soyad\n• E-posta\n• Telefon\n• Doğum Tarihi\n• Doktor Bilgisi');
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved avatar
+            const savedAvatar = localStorage.getItem('userAvatar');
+            if (savedAvatar) {
+                document.querySelector('.profile-avatar').textContent = savedAvatar;
+            }
+
+            loadProfileData();
+
+            // Scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Header background on scroll
+            window.addEventListener('scroll', () => {
+                const header = document.querySelector('header');
+                if (window.scrollY > 100) {
+                    header.style.background = 'rgba(102, 126, 234, 0.95)';
+                } else {
+                    header.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                }
+            });
+
+            // Listen for storage changes to update drug list
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'userDrugs') {
+                    loadProfileData();
+                }
+            });
+
+            // Update compliance rate with animation
+            setTimeout(() => {
+                const complianceElement = document.getElementById('complianceRate');
+                let currentRate = 0;
+                const targetRate = 87;
+                const increment = 2;
+                
+                const updateRate = setInterval(() => {
+                    currentRate += increment;
+                    if (currentRate >= targetRate) {
+                        currentRate = targetRate;
+                        clearInterval(updateRate);
+                    }
+                    complianceElement.textContent = currentRate + '%';
+                }, 50);
+            }, 1000);
+        });
+
+        // Add some interactivity to stat items
+        document.addEventListener('DOMContentLoaded', function() {
+            const statItems = document.querySelectorAll('.stat-item');
+            statItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const label = this.querySelector('.stat-label').textContent;
+                    const number = this.querySelector('.stat-number').textContent;
+                    const userType = document.getElementById('userType').textContent;
+                    
+                    let message = '';
+                    if (userType === 'Doktor') {
+                        switch(label) {
+                            case 'Toplam İlaç':
+                                message = `Şu ana kadar ${number} farklı ilaç reçete ettiniz.`;
+                                break;
+                            case 'Aktif İlaç':
+                                message = `Şu anda hastalarınız için ${number} farklı ilaç aktif.`;
+                                break;
+                            case 'Günlük Doz':
+                                message = `Hastalarınız günde toplam ${number} doz ilaç alıyor.`;
+                                break;
+                            case 'Uyum Oranı':
+                                message = `Hastalarınızın ilaç alma uyum oranı ${number}.`;
+                                break;
+                        }
+                    } else {
+                        switch(label) {
+                            case 'Toplam İlaç':
+                                message = `Şu ana kadar ${number} farklı ilaç kullandınız.`;
+                                break;
+                            case 'Aktif İlaç':
+                                message = `Şu anda ${number} farklı ilaç aktif olarak kullanıyorsunuz.`;
+                                break;
+                            case 'Günlük Doz':
+                                message = `Günde toplam ${number} doz ilaç alıyorsunuz.`;
+                                break;
+                            case 'Uyum Oranı':
+                                message = `İlaç alma uyum oranınız ${number}. Harika bir performans!`;
+                                break;
+                        }
+                    }
+                    
+                    alert(message);
+                });
+            });
+        });
+
+        // Add profile completion check
+        function checkProfileCompletion() {
+            const requiredFields = ['userName', 'userEmail', 'userPhone', 'userType'];
+            let completedFields = 0;
+            
+            requiredFields.forEach(fieldId => {
+                const element = document.getElementById(fieldId);
+                if (element && element.textContent.trim() !== '') {
+                    completedFields++;
+                }
+            });
+            
+            const completionRate = Math.round((completedFields / requiredFields.length) * 100);
+            
+            // You could show a completion badge or notification here
+            if (completionRate < 100) {
+                console.log(`Profil tamamlanma oranı: ${completionRate}%`);
+            }
+            
+            return completionRate;
+        }
+
+        // Emergency contact feature
+        function showEmergencyContact() {
+            const userType = document.getElementById('userType').textContent;
+            const userID = document.getElementById('userID').textContent;
+            
+            let emergencyInfo = `
+                🚨 ACİL DURUM İLETİŞİM
+                
+                Kullanıcı Tipi: ${userType}
+                Kullanıcı ID: ${userID}
+                
+                Acil Sağlık Hattı: 112
+                Zehir Danışma: 114
+            `;
+
+            if (userType === 'Doktor') {
+                emergencyInfo += `
+                
+                Bu bir doktor hesabıdır.
+                Acil durumlarda hasta bilgilerine erişim için bu ID'yi kullanın.
+                `;
+            } else {
+                emergencyInfo += `
+                
+                Bu bilgileri acil durumlarda sağlık personeline gösterebilirsiniz.
+                `;
+            }
+            
+            if (confirm(emergencyInfo + '\n\nBu bilgileri kopyalamak ister misiniz?')) {
+                navigator.clipboard.writeText(emergencyInfo);
+            }
+        }
+
+        // Add emergency button (could be triggered from somewhere)
+        document.addEventListener('keydown', function(e) {
+            // Ctrl + E for emergency info
+            if (e.ctrlKey && e.key === 'e') {
+                e.preventDefault();
+                showEmergencyContact();
+            }
+        });
+    </script>
+</body>
+</html>
