@@ -257,84 +257,71 @@
             box-shadow: 0 10px 25px rgba(238, 90, 36, 0.4);
         }
 
-        /* Camera Section */
-        .camera-section {
+        /* File Upload Section */
+        .file-upload-section {
             text-align: center;
             margin-top: 2rem;
         }
 
-        .camera-container {
+        .file-input-container {
             position: relative;
             display: inline-block;
             margin-bottom: 20px;
         }
 
-        #kamera-video {
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            max-width: 100%;
-            height: auto;
-        }
-
-        .camera-controls {
-            margin-top: 15px;
+        .file-input {
             display: none;
-            gap: 10px;
-            justify-content: center;
-            align-items: center;
         }
 
-        .camera-btn {
+        .file-input-label {
+            display: inline-block;
             background: linear-gradient(135deg, #43e97b, #38f9d7);
-            border: none;
-            border-radius: 50px;
-            padding: 12px 20px;
             color: white;
-            font-weight: 600;
+            padding: 15px 30px;
+            border-radius: 15px;
             cursor: pointer;
+            font-weight: 600;
             transition: all 0.3s ease;
-            font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(67, 233, 123, 0.3);
         }
 
-        .camera-btn:hover {
-            transform: translateY(-2px);
+        .file-input-label:hover {
+            transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(67, 233, 123, 0.4);
         }
 
-        .camera-btn.close {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-        }
-
-        .camera-info {
-            background: linear-gradient(135deg, #43e97b, #38f9d7);
+        .file-info {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
             color: white;
             padding: 15px;
             border-radius: 10px;
             margin-top: 15px;
             font-size: 0.9rem;
+            display: none;
         }
 
-        /* Captured Photo Section */
-        .captured-photo {
+        /* Selected Image Section */
+        .selected-image {
             margin-top: 20px;
             text-align: center;
             display: none;
         }
 
-        .captured-photo img {
-            max-width: 300px;
+        .selected-image img {
+            max-width: 400px;
+            max-height: 300px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             margin-bottom: 15px;
         }
 
-        .photo-actions {
+        .image-actions {
             display: flex;
             gap: 10px;
             justify-content: center;
         }
 
-        .photo-btn {
+        .image-btn {
             background: linear-gradient(135deg, #667eea, #764ba2);
             border: none;
             border-radius: 10px;
@@ -346,18 +333,13 @@
             font-size: 0.9rem;
         }
 
-        .photo-btn:hover {
+        .image-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
         }
 
-        .photo-btn.retry {
+        .image-btn.retry {
             background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-        }
-
-        /* Hidden Canvas for Photo Capture */
-        #capture-canvas {
-            display: none;
         }
 
         /* Drug Info Section */
@@ -660,12 +642,18 @@
                 grid-template-columns: 1fr;
             }
 
-            .camera-controls {
+            .file-input-label {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+
+            .image-actions {
                 flex-direction: column;
             }
 
-            .photo-actions {
-                flex-direction: column;
+            .selected-image img {
+                max-width: 100%;
+                max-height: 250px;
             }
         }
 
@@ -679,7 +667,7 @@
     <header>
         <div class="container">
             <div class="header-content">
-                <a href="index.html" class="logo">
+                <a href="anasayfa.html" class="logo">
                     <div class="logo-icon"></div>
                     İlaçAsistan
                 </a>
@@ -689,7 +677,7 @@
                         <li><a href="hakkinda.html">Hakkında</a></li>
                         <li><a href="ilac-sorgula.html" class="active">İlaç Sorgula</a></li>
                         <li><a href="profilim.html">Profilim</a></li>
-                        <li><a href="giris.html" class="login-btn">Giriş Yap</a></li>
+                        <li><a href="girisyap.html" class="login-btn">Giriş Yap</a></li>
                     </ul>
                 </nav>
             </div>
@@ -712,40 +700,36 @@
                 <div class="search-icon">🔍</div>
                 İLAÇ ARA
             </h2>
-            
+           
             <div class="search-box">
                 <input type="text" class="search-input" id="ilacInput" placeholder="İlaç ismini girin (örn: Parol, Aspirin, Augmentin)..." />
-                <button class="icon-button" onclick="kameraAc()" title="Kamera ile İlaç Tara">
+               <button class="icon-button" onclick="dosyaYukle()" title="Dosyadan İlaç Resmi Yükle">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M3 7h4l1.5-2h7L17 7h4v12H3V7z" />
-                        <circle cx="12" cy="13" r="3" />
+                              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                     </svg>
                 </button>
                 <button class="ara-button" onclick="ilacAra()">Ara</button>
             </div>
 
-            <div class="camera-section">
-                <div class="camera-container">
-                    <video id="kamera-video" autoplay style="display: none;" width="400" height="300"></video>
-                    <canvas id="capture-canvas"></canvas>
+            <div class="file-upload-section">
+                <div class="file-input-container">
+                    <input type="file" id="file-input" class="file-input" accept="image/*" onchange="dosyaSecildi()" />
+                    <label for="file-input" class="file-input-label">
+                        📎 Bilgisayardan İlaç Resmi Seç
+                    </label>
                 </div>
-                
-                <div class="camera-controls" id="camera-controls">
-                    <button class="camera-btn" onclick="fotografCek()">📸 Fotoğraf Çek</button>
-                    <button class="camera-btn close" onclick="kameraKapat()">❌ Kamerayı Kapat</button>
-                </div>
-                
-                <div class="camera-info" id="camera-info" style="display: none;">
-                    📸 Kamera aktif - İlaç kutusunu kameraya gösterin ve fotoğraf çekin
+               
+                <div class="file-info" id="file-info">
+                    📎 Lütfen JPG, PNG veya JPEG formatında bir resim dosyası seçin
                 </div>
 
-                <div class="captured-photo" id="captured-photo">
-                    <h4>📷 Çekilen Fotoğraf:</h4>
-                    <img id="captured-image" src="" alt="Çekilen Fotoğraf" />
-                    <div class="photo-actions">
-                        <button class="photo-btn" onclick="fotografAnaliz()">🔍 Fotoğrafı Analiz Et</button>
-                        <button class="photo-btn retry" onclick="fotografSil()">🗑️ Sil ve Tekrar Çek</button>
+                <div class="selected-image" id="selected-image">
+                    <h4>📷 Seçilen Resim:</h4>
+                    <img id="selected-image-display" src="" alt="Seçilen Resim" />
+                    <div class="image-actions">
+                        <button class="image-btn" onclick="resimAnaliz()">🔍 Resmi Analiz Et</button>
+                        <button class="image-btn retry" onclick="resimSil()">🗑️ Sil ve Yeni Seç</button>
                     </div>
                 </div>
             </div>
@@ -759,12 +743,12 @@
                     <h3 id="ilac-adi"></h3>
                 </div>
             </div>
-            
+           
             <div class="drug-description" id="ilac-aciklama"></div>
 
             <div class="add-form">
                 <h4>📅 İlaç Takibine Ekle</h4>
-                
+               
                 <div class="form-row">
                     <div class="form-group">
                         <label for="gun">Kullanım Günü:</label>
@@ -824,12 +808,12 @@
                     <h4>📅 İlaç Takvimi</h4>
                     <p>Günlük ilaç planını görüntüle</p>
                 </a>
-                
+               
                 <a href="#" class="action-card" onclick="showReports()">
                     <h4>📈 Raporlarım</h4>
                     <p>Kullanım istatistikleri ve raporlar</p>
                 </a>
-                
+               
                 <a href="#" class="action-card" onclick="showInteractions()">
                     <h4>⚠️ Etkileşim Kontrolü</h4>
                     <p>İlaç uyumluluğunu kontrol et</p>
@@ -883,385 +867,285 @@
     </footer>
 
     <script>
-        let currentStream = null;
+        // İlaç veritabanı (örnek)
+        const ilacVeritabani = {
+            'parol': {
+                ad: 'Parol 500mg',
+                aciklama: 'Parasetamol içeren ağrı kesici ve ateş düşürücü ilaç. Baş ağrısı, diş ağrısı, kas ağrıları ve ateş için kullanılır. Günlük maksimum doz 4000mg\'dır.'
+            },
+            'aspirin': {
+                ad: 'Aspirin 100mg',
+                aciklama: 'Asetilsalisilik asit içeren kan sulandırıcı ve ağrı kesici ilaç. Kalp krizi riskini azaltmak, ağrı kesici ve ateş düşürücü olarak kullanılır.'
+            },
+            'augmentin': {
+                ad: 'Augmentin 1000mg',
+                aciklama: 'Amoksisilin ve klavulanik asit içeren antibiyotik. Bakteriyel enfeksiyonların tedavisinde kullanılır. Doktor reçetesi ile kullanılmalıdır.'
+            },
+            'voltaren': {
+                ad: 'Voltaren 50mg',
+                aciklama: 'Diklofenak içeren antiinflamatuar ilaç. Kas ve eklem ağrıları, iltihaplanma ve şişlik için kullanılır.'
+            },
+            'nexium': {
+                ad: 'Nexium 40mg',
+                aciklama: 'Esomeprazol içeren mide koruyucu ilaç. Mide asidi fazlalığı, reflü ve mide ülseri için kullanılır.'
+            }
+        };
 
         // Notification function
         function showNotification(message, type = 'success') {
             const notification = document.getElementById('notification');
             notification.textContent = message;
             notification.style.display = 'block';
-            
+           
             if (type === 'error') {
                 notification.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a24)';
             } else {
                 notification.style.background = 'linear-gradient(135deg, #43e97b, #38f9d7)';
             }
-            
+           
             setTimeout(() => {
                 notification.style.display = 'none';
             }, 3000);
         }
 
-        // Camera functionality
-        function kameraAc() {
-            const video = document.getElementById('kamera-video');
-            const cameraInfo = document.getElementById('camera-info');
-            const cameraControls = document.getElementById('camera-controls');
-            const capturedPhoto = document.getElementById('captured-photo');
+        // File upload functionality
+        function dosyaYukle() {
+            const fileInput = document.getElementById('file-input');
+            fileInput.click();
+        }
 
-            // Hide captured photo if visible
-            capturedPhoto.style.display = 'none';
+        function dosyaSecildi() {
+            const fileInput = document.getElementById('file-input');
+            const fileInfo = document.getElementById('file-info');
+            const selectedImage = document.getElementById('selected-image');
+            const selectedImageDisplay = document.getElementById('selected-image-display');
             
-            video.style.display = 'block';
-            cameraInfo.style.display = 'block';
-            cameraControls.style.display = 'flex';
-
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                navigator.mediaDevices.getUserMedia({ 
-                    video: { 
-                        width: { ideal: 640 },
-                        height: { ideal: 480 }
-                    } 
-                })
-                .then(function (stream) {
-                    currentStream = stream;
-                    video.srcObject = stream;
-                    showNotification('📸 Kamera başarıyla açıldı! İlaç kutusunu gösterin ve fotoğraf çekin.');
-                })
-                .catch(function (err) {
-                    showNotification('❌ Kamera erişimi reddedildi veya desteklenmiyor.', 'error');
-                    kameraKapat();
-                    console.error(err);
-                });
-            } else {
-                showNotification("❌ Tarayıcınız kamera özelliğini desteklemiyor.", 'error');
-                kameraKapat();
+            if (fileInput.files && fileInput.files[0]) {
+                const file = fileInput.files[0];
+                
+                // Check if file is an image
+                if (!file.type.startsWith('image/')) {
+                    showNotification('❌ Lütfen sadece resim dosyası seçin!', 'error');
+                    return;
+                }
+                
+                // Check file size (limit to 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showNotification('❌ Dosya boyutu 5MB\'dan küçük olmalı!', 'error');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    selectedImageDisplay.src = e.target.result;
+                    selectedImage.style.display = 'block';
+                    fileInfo.style.display = 'none';
+                    showNotification('✅ Resim başarıyla yüklendi! Analiz etmek için butona tıklayın.');
+                };
+                reader.readAsDataURL(file);
             }
         }
 
-        // Close camera
-        function kameraKapat() {
-            const video = document.getElementById('kamera-video');
-            const cameraInfo = document.getElementById('camera-info');
-            const cameraControls = document.getElementById('camera-controls');
-
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
-                currentStream = null;
-            }
-
-            video.style.display = 'none';
-            cameraInfo.style.display = 'none';
-            cameraControls.style.display = 'none';
-            video.srcObject = null;
-
-            showNotification('📷 Kamera kapatıldı.');
+        // Delete selected image
+        function resimSil() {
+            const fileInput = document.getElementById('file-input');
+            const selectedImage = document.getElementById('selected-image');
+            const selectedImageDisplay = document.getElementById('selected-image-display');
+            const fileInfo = document.getElementById('file-info');
+            
+            fileInput.value = '';
+            selectedImageDisplay.src = '';
+            selectedImage.style.display = 'none';
+            fileInfo.style.display = 'block';
+            
+            showNotification('🗑️ Resim silindi. Yeni bir resim seçebilirsiniz.');
         }
 
-        // Capture photo
-        function fotografCek() {
-            const video = document.getElementById('kamera-video');
-            const canvas = document.getElementById('capture-canvas');
-            const capturedImage = document.getElementById('captured-image');
-            const capturedPhoto = document.getElementById('captured-photo');
-
-            if (!video.srcObject) {
-                showNotification('❌ Kamera aktif değil!', 'error');
+        // Analyze selected image
+        function resimAnaliz() {
+            const selectedImageDisplay = document.getElementById('selected-image-display');
+            
+            if (!selectedImageDisplay.src) {
+                showNotification('❌ Analiz edilecek resim bulunamadı!', 'error');
                 return;
             }
 
-            // Set canvas dimensions to match video
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-
-            // Draw the video frame to canvas
-            const context = canvas.getContext('2d');
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            // Convert canvas to image data URL
-            const imageDataURL = canvas.toDataURL('image/jpeg', 0.8);
-
-            // Display the captured image
-            capturedImage.src = imageDataURL;
-            capturedPhoto.style.display = 'block';
-
-            // Close camera after capture
-            kameraKapat();
-
-            showNotification('✅ Fotoğraf başarıyla çekildi! Analiz etmek için butona tıklayın.');
-        }
-
-        // Delete photo and retake
-        function fotografSil() {
-            const capturedPhoto = document.getElementById('captured-photo');
-            const capturedImage = document.getElementById('captured-image');
-            
-            capturedImage.src = '';
-            capturedPhoto.style.display = 'none';
-            
-            showNotification('🗑️ Fotoğraf silindi. Yeni bir fotoğraf çekebilirsiniz.');
-            
-            // Optionally reopen camera
-            setTimeout(() => {
-                kameraAc();
-            }, 500);
-        }
-
-        // Analyze captured photo
-        function fotografAnaliz() {
-            const capturedImage = document.getElementById('captured-image');
-            
-            if (!capturedImage.src) {
-                showNotification('❌ Analiz edilecek fotoğraf bulunamadı!', 'error');
-                return;
-            }
-
-            showNotification('🔍 Fotoğraf analiz ediliyor...');
+            showNotification('🔍 Resim analiz ediliyor...');
 
             // Simulate AI analysis (in real app, this would send to AI service)
             setTimeout(() => {
                 // Mock analysis results - randomly select a drug
-                const mockDrugs = ['Parol', 'Aspirin', 'Augmentin', 'Voltaren', 'Nexium'];
+                const mockDrugs = ['parol', 'aspirin', 'augmentin', 'voltaren', 'nexium'];
                 const detectedDrug = mockDrugs[Math.floor(Math.random() * mockDrugs.length)];
                 
                 // Set the detected drug name in the search box
                 document.getElementById('ilacInput').value = detectedDrug;
                 
-                // Automatically search for the drug
+                // Automatically search for the detected drug
                 ilacAra();
                 
-                showNotification(`🎯 Fotoğrafta "${detectedDrug}" tespit edildi! Bilgiler yükleniyor...`);
+                showNotification('✅ Resim analizi tamamlandı! İlaç bilgileri gösteriliyor.');
             }, 2000);
         }
 
-        // Drug search functionality
+        // Search drug function
         function ilacAra() {
-            const ilacAdi = document.getElementById('ilacInput').value.trim();
+            const ilacAdi = document.getElementById('ilacInput').value.trim().toLowerCase();
+            
             if (!ilacAdi) {
-                showNotification("❌ Lütfen bir ilaç ismi girin.", 'error');
+                showNotification('❌ Lütfen bir ilaç adı girin!', 'error');
                 return;
             }
 
-            // Sample drug information
-            const drugInfo = {
-                'parol': {
-                    name: 'Parol 500mg',
-                    description: 'Parol, parasetamol etken maddesi içeren bir ağrı kesici ve ateş düşürücü ilaçtır. Hafif ve orta şiddetteki ağrıların tedavisinde kullanılır. Yetişkinlerde günde en fazla 4 gram (8 tablet) alınmalıdır. Karaciğer hastalığı olan kişiler dikkatli kullanmalıdır.'
-                },
-                'aspirin': {
-                    name: 'Aspirin 100mg',
-                    description: 'Aspirin, asetilsalisilik asit etken maddeli bir ilaçtır. Kalp krizi ve felç riskini azaltmak için düşük dozda kullanılır. Kan sulandırıcı etkisi vardır. Mide hassasiyeti olanlar dikkatli kullanmalıdır.'
-                },
-                'augmentin': {
-                    name: 'Augmentin 1g',
-                    description: 'Augmentin, amoksisilin ve klavulanik asit kombinasyonu içeren bir antibiyotiktir. Çeşitli bakteriyel enfeksiyonların tedavisinde kullanılır. Reçeteye bağlı bir ilaçtır ve doktor önerisi olmadan kullanılmamalıdır.'
-                },
-                'voltaren': {
-                    name: 'Voltaren 50mg',
-                    description: 'Voltaren, diklofenak sodyum etken maddeli antiinflamatuar bir ilaçtır. Kas ve eklem ağrılarında, romatizmal hastalıklarda kullanılır. Mide koruyucu ile birlikte alınması önerilir.'
-                },
-                'nexium': {
-                    name: 'Nexium 20mg',
-                    description: 'Nexium, esomeprazol etken maddeli bir proton pompa inhibitörüdür. Mide asidi fazlalığı, gastrit ve reflü hastalığının tedavisinde kullanılır. Genellikle yemekten önce alınır.'
+            showNotification('🔍 İlaç bilgileri aranıyor...');
+
+            // Simulate search delay
+            setTimeout(() => {
+                if (ilacVeritabani[ilacAdi]) {
+                    const ilac = ilacVeritabani[ilacAdi];
+                    document.getElementById('ilac-adi').textContent = ilac.ad;
+                    document.getElementById('ilac-aciklama').textContent = ilac.aciklama;
+                    document.getElementById('ilac-bilgi-kutusu').style.display = 'block';
+                    
+                    // Scroll to drug info section
+                    document.getElementById('ilac-bilgi-kutusu').scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    showNotification('✅ İlaç bilgileri bulundu!');
+                } else {
+                    showNotification('❌ İlaç bulunamadı. Lütfen farklı bir isim deneyin.', 'error');
+                    document.getElementById('ilac-bilgi-kutusu').style.display = 'none';
                 }
-            };
-
-            const searchKey = ilacAdi.toLowerCase();
-            const drug = drugInfo[searchKey] || {
-                name: ilacAdi,
-                description: `${ilacAdi} hakkında detaylı bilgi alabilmek için eczacınıza danışınız. Bu ilaç düzenli takip gerektiren bir ilaç olabilir. Kullanım talimatlarını mutlaka okuyunuz ve doktor önerileri doğrultusunda kullanınız.`
-            };
-
-            document.getElementById('ilac-adi').innerText = drug.name;
-            document.getElementById('ilac-aciklama').innerText = drug.description;
-            document.getElementById('ilac-bilgi-kutusu').style.display = 'block';
-            
-            // Scroll to drug info section
-            document.getElementById('ilac-bilgi-kutusu').scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
-            });
-
-            showNotification(`✅ ${drug.name} bilgileri başarıyla yüklendi!`);
+            }, 1000);
         }
 
-        // Add drug to list
+        // Add drug to tracking
         function ilacEkle() {
-            const ilac = document.getElementById('ilac-adi').innerText;
+            const ilacAdi = document.getElementById('ilac-adi').textContent;
             const gun = document.getElementById('gun').value;
             const saat = document.getElementById('saat').value;
             const doz = document.getElementById('doz').value;
             const yemek = document.getElementById('yemek').value;
 
-            if (!saat) {
-                showNotification("❌ Lütfen bir saat seçin.", 'error');
+            if (!ilacAdi) {
+                showNotification('❌ Önce bir ilaç arayın!', 'error');
                 return;
             }
 
-            // Create drug entry
-            const drugEntry = {
-                name: ilac,
-                day: gun,
-                time: saat,
-                dose: doz,
-                meal: yemek,
-                addedDate: new Date().toLocaleDateString('tr-TR'),
-                id: Date.now() // Unique ID
-            };
-
-            // Get existing drugs from memory
-            let savedDrugs = JSON.parse(localStorage.getItem('userDrugs') || '[]');
-            
-            // Add new drug
-            savedDrugs.push(drugEntry);
-            
-            // Save to memory
-            localStorage.setItem('userDrugs', JSON.stringify(savedDrugs));
-
-            // If day is "Her Gün", add to multiple dates in calendar
-            if (gun === 'Her Gün') {
-                addDrugToCalendarDates(drugEntry);
-            } else {
-                addDrugToSpecificDay(drugEntry);
+            if (!saat) {
+                showNotification('❌ Lütfen kullanım saatini belirtin!', 'error');
+                return;
             }
 
-            showNotification(`✅ ${ilac} başarıyla ilaç listenize eklendi!\n📅 ${gun} günü saat ${saat}'te ${doz} ${yemek} alınacak.`);
+            // In a real application, this would save to database
+            const ilacBilgisi = {
+                ad: ilacAdi,
+                gun: gun,
+                saat: saat,
+                doz: doz,
+                yemek: yemek,
+                tarih: new Date().toISOString()
+            };
+
+            // Save to localStorage (in real app, this would be server-side)
+            let takipListesi = JSON.parse(localStorage.getItem('ilacTakipListesi') || '[]');
+            takipListesi.push(ilacBilgisi);
+            localStorage.setItem('ilacTakipListesi', JSON.stringify(takipListesi));
+
+            showNotification('✅ İlaç takip listenize eklendi!');
             
             // Reset form
+            document.getElementById('gun').value = 'Her Gün';
             document.getElementById('saat').value = '';
-            document.getElementById('gun').selectedIndex = 0;
-            document.getElementById('doz').selectedIndex = 0;
-            document.getElementById('yemek').selectedIndex = 0;
-        }
-
-        // Add drug to calendar for daily use
-        function addDrugToCalendarDates(drugEntry) {
-            let calendarData = JSON.parse(localStorage.getItem('calendarDrugs') || '{}');
-            
-            // Add to next 30 days for "Her Gün" option
-            const today = new Date();
-            for (let i = 0; i < 30; i++) {
-                const date = new Date(today);
-                date.setDate(today.getDate() + i);
-                const dateKey = date.toISOString().split('T')[0];
-                
-                if (!calendarData[dateKey]) {
-                    calendarData[dateKey] = [];
-                }
-                
-                calendarData[dateKey].push({
-                    name: drugEntry.name,
-                    time: drugEntry.time,
-                    dose: drugEntry.dose,
-                    meal: drugEntry.meal
-                });
-            }
-            
-            localStorage.setItem('calendarDrugs', JSON.stringify(calendarData));
-        }
-
-        // Add drug to specific day of week
-        function addDrugToSpecificDay(drugEntry) {
-            let calendarData = JSON.parse(localStorage.getItem('calendarDrugs') || '{}');
-            
-            const dayMap = {
-                'Pazartesi': 1, 'Salı': 2, 'Çarşamba': 3, 'Perşembe': 4,
-                'Cuma': 5, 'Cumartesi': 6, 'Pazar': 0
-            };
-            
-            const targetDay = dayMap[drugEntry.day];
-            const today = new Date();
-            
-            // Add to next 4 weeks for the specific day
-            for (let week = 0; week < 4; week++) {
-                const date = new Date(today);
-                const daysUntilTarget = (targetDay - today.getDay() + 7) % 7;
-                date.setDate(today.getDate() + daysUntilTarget + (week * 7));
-                
-                const dateKey = date.toISOString().split('T')[0];
-                
-                if (!calendarData[dateKey]) {
-                    calendarData[dateKey] = [];
-                }
-                
-                calendarData[dateKey].push({
-                    name: drugEntry.name,
-                    time: drugEntry.time,
-                    dose: drugEntry.dose,
-                    meal: drugEntry.meal
-                });
-            }
-            
-            localStorage.setItem('calendarDrugs', JSON.stringify(calendarData));
+            document.getElementById('doz').value = '1 tablet';
+            document.getElementById('yemek').value = 'Aç karnına';
         }
 
         // Quick action functions
         function showCalendar() {
-            showNotification("📅 İlaç takvimi açılıyor...");
-            setTimeout(() => {
-                window.location.href = 'takvim.html';
-            }, 1000);
+            showNotification('📅 İlaç takvimi özelliği yakında aktif olacak!');
         }
 
         function showReports() {
-            showNotification("📈 Raporlar sayfası açılıyor...");
-            setTimeout(() => {
-                window.location.href = 'raporlar.html';
-            }, 1000);
+            showNotification('📈 Raporlar özelliği yakında aktif olacak!');
         }
 
         function showInteractions() {
-            showNotification("⚠️ Seçim kontrolü başlatılıyor...");
-            setTimeout(() => {
-                window.location.href = 'secim-kontrol.html';
-            }, 1000);
+            showNotification('⚠️ Etkileşim kontrolü özelliği yakında aktif olacak!');
         }
 
-        // Scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+        // Fade in animation for elements
+        function handleScrollAnimation() {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
                 }
             });
-        }, observerOptions);
+        }
 
-        // Observe all fade-in elements
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
+        // Enter key support for search
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('ilacInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    ilacAra();
+                }
+            });
+
+            // Initial animation check
+            handleScrollAnimation();
         });
 
-        // Header background on scroll
-        window.addEventListener('scroll', () => {
-            const header = document.querySelector('header');
-            if (window.scrollY > 100) {
-                header.style.background = 'rgba(102, 126, 234, 0.95)';
-            } else {
-                header.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+        // Scroll event listener for animations
+        window.addEventListener('scroll', handleScrollAnimation);
+
+        // File drag and drop support
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileUploadSection = document.querySelector('.file-upload-section');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                fileUploadSection.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
             }
-        });
 
-        // Enhanced search with Enter key
-        document.getElementById('ilacInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                ilacAra();
+            ['dragenter', 'dragover'].forEach(eventName => {
+                fileUploadSection.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                fileUploadSection.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight(e) {
+                fileUploadSection.style.backgroundColor = '#f0f8ff';
+                fileUploadSection.style.borderColor = '#4facfe';
             }
-        });
 
-        // Auto-focus on search input
-        window.addEventListener('load', () => {
-            document.getElementById('ilacInput').focus();
-        });
+            function unhighlight(e) {
+                fileUploadSection.style.backgroundColor = '';
+                fileUploadSection.style.borderColor = '';
+            }
 
-        // Cleanup when page unloads
-        window.addEventListener('beforeunload', () => {
-            if (currentStream) {
-                currentStream.getTracks().forEach(track => track.stop());
+            fileUploadSection.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+
+                if (files.length > 0) {
+                    const fileInput = document.getElementById('file-input');
+                    fileInput.files = files;
+                    dosyaSecildi();
+                }
             }
         });
     </script>
