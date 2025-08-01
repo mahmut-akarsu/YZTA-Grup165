@@ -263,10 +263,46 @@
             margin-top: 2rem;
         }
 
+        .camera-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
         #kamera-video {
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .camera-controls {
+            margin-top: 15px;
+            display: none;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .camera-btn {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .camera-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(67, 233, 123, 0.4);
+        }
+
+        .camera-btn.close {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
         }
 
         .camera-info {
@@ -276,6 +312,52 @@
             border-radius: 10px;
             margin-top: 15px;
             font-size: 0.9rem;
+        }
+
+        /* Captured Photo Section */
+        .captured-photo {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .captured-photo img {
+            max-width: 300px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 15px;
+        }
+
+        .photo-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .photo-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .photo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .photo-btn.retry {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        }
+
+        /* Hidden Canvas for Photo Capture */
+        #capture-canvas {
+            display: none;
         }
 
         /* Drug Info Section */
@@ -577,6 +659,14 @@
             .action-grid {
                 grid-template-columns: 1fr;
             }
+
+            .camera-controls {
+                flex-direction: column;
+            }
+
+            .photo-actions {
+                flex-direction: column;
+            }
         }
 
         html {
@@ -599,8 +689,7 @@
                         <li><a href="hakkinda.html">Hakkında</a></li>
                         <li><a href="ilac-sorgula.html" class="active">İlaç Sorgula</a></li>
                         <li><a href="profilim.html">Profilim</a></li>
-                        <li><a href="iletisim.html">İletişim</a></li>
-                        <li><a href="login.html" class="login-btn">Giriş Yap</a></li>
+                        <li><a href="giris.html" class="login-btn">Giriş Yap</a></li>
                     </ul>
                 </nav>
             </div>
@@ -637,9 +726,27 @@
             </div>
 
             <div class="camera-section">
-                <video id="kamera-video" autoplay style="display: none;" width="300" height="200"></video>
+                <div class="camera-container">
+                    <video id="kamera-video" autoplay style="display: none;" width="400" height="300"></video>
+                    <canvas id="capture-canvas"></canvas>
+                </div>
+                
+                <div class="camera-controls" id="camera-controls">
+                    <button class="camera-btn" onclick="fotografCek()">📸 Fotoğraf Çek</button>
+                    <button class="camera-btn close" onclick="kameraKapat()">❌ Kamerayı Kapat</button>
+                </div>
+                
                 <div class="camera-info" id="camera-info" style="display: none;">
-                    📸 Kamera aktif - İlaç kutusunu kameraya gösterin
+                    📸 Kamera aktif - İlaç kutusunu kameraya gösterin ve fotoğraf çekin
+                </div>
+
+                <div class="captured-photo" id="captured-photo">
+                    <h4>📷 Çekilen Fotoğraf:</h4>
+                    <img id="captured-image" src="" alt="Çekilen Fotoğraf" />
+                    <div class="photo-actions">
+                        <button class="photo-btn" onclick="fotografAnaliz()">🔍 Fotoğrafı Analiz Et</button>
+                        <button class="photo-btn retry" onclick="fotografSil()">🗑️ Sil ve Tekrar Çek</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -776,6 +883,8 @@
     </footer>
 
     <script>
+        let currentStream = null;
+
         // Notification function
         function showNotification(message, type = 'success') {
             const notification = document.getElementById('notification');
@@ -797,34 +906,139 @@
         function kameraAc() {
             const video = document.getElementById('kamera-video');
             const cameraInfo = document.getElementById('camera-info');
+            const cameraControls = document.getElementById('camera-controls');
+            const capturedPhoto = document.getElementById('captured-photo');
+
+            // Hide captured photo if visible
+            capturedPhoto.style.display = 'none';
             
             video.style.display = 'block';
             cameraInfo.style.display = 'block';
+            cameraControls.style.display = 'flex';
 
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                navigator.mediaDevices.getUserMedia({ video: true })
-                    .then(function (stream) {
-                        video.srcObject = stream;
-                        showNotification('Kamera başarıyla açıldı! İlaç kutusunu gösterin.');
-                    })
-                    .catch(function (err) {
-                        showNotification('Kamera erişimi reddedildi veya desteklenmiyor.', 'error');
-                        video.style.display = 'none';
-                        cameraInfo.style.display = 'none';
-                        console.error(err);
-                    });
+                navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    } 
+                })
+                .then(function (stream) {
+                    currentStream = stream;
+                    video.srcObject = stream;
+                    showNotification('📸 Kamera başarıyla açıldı! İlaç kutusunu gösterin ve fotoğraf çekin.');
+                })
+                .catch(function (err) {
+                    showNotification('❌ Kamera erişimi reddedildi veya desteklenmiyor.', 'error');
+                    kameraKapat();
+                    console.error(err);
+                });
             } else {
-                showNotification("Tarayıcınız kamera özelliğini desteklemiyor.", 'error');
-                video.style.display = 'none';
-                cameraInfo.style.display = 'none';
+                showNotification("❌ Tarayıcınız kamera özelliğini desteklemiyor.", 'error');
+                kameraKapat();
             }
+        }
+
+        // Close camera
+        function kameraKapat() {
+            const video = document.getElementById('kamera-video');
+            const cameraInfo = document.getElementById('camera-info');
+            const cameraControls = document.getElementById('camera-controls');
+
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+            }
+
+            video.style.display = 'none';
+            cameraInfo.style.display = 'none';
+            cameraControls.style.display = 'none';
+            video.srcObject = null;
+
+            showNotification('📷 Kamera kapatıldı.');
+        }
+
+        // Capture photo
+        function fotografCek() {
+            const video = document.getElementById('kamera-video');
+            const canvas = document.getElementById('capture-canvas');
+            const capturedImage = document.getElementById('captured-image');
+            const capturedPhoto = document.getElementById('captured-photo');
+
+            if (!video.srcObject) {
+                showNotification('❌ Kamera aktif değil!', 'error');
+                return;
+            }
+
+            // Set canvas dimensions to match video
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            // Draw the video frame to canvas
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Convert canvas to image data URL
+            const imageDataURL = canvas.toDataURL('image/jpeg', 0.8);
+
+            // Display the captured image
+            capturedImage.src = imageDataURL;
+            capturedPhoto.style.display = 'block';
+
+            // Close camera after capture
+            kameraKapat();
+
+            showNotification('✅ Fotoğraf başarıyla çekildi! Analiz etmek için butona tıklayın.');
+        }
+
+        // Delete photo and retake
+        function fotografSil() {
+            const capturedPhoto = document.getElementById('captured-photo');
+            const capturedImage = document.getElementById('captured-image');
+            
+            capturedImage.src = '';
+            capturedPhoto.style.display = 'none';
+            
+            showNotification('🗑️ Fotoğraf silindi. Yeni bir fotoğraf çekebilirsiniz.');
+            
+            // Optionally reopen camera
+            setTimeout(() => {
+                kameraAc();
+            }, 500);
+        }
+
+        // Analyze captured photo
+        function fotografAnaliz() {
+            const capturedImage = document.getElementById('captured-image');
+            
+            if (!capturedImage.src) {
+                showNotification('❌ Analiz edilecek fotoğraf bulunamadı!', 'error');
+                return;
+            }
+
+            showNotification('🔍 Fotoğraf analiz ediliyor...');
+
+            // Simulate AI analysis (in real app, this would send to AI service)
+            setTimeout(() => {
+                // Mock analysis results - randomly select a drug
+                const mockDrugs = ['Parol', 'Aspirin', 'Augmentin', 'Voltaren', 'Nexium'];
+                const detectedDrug = mockDrugs[Math.floor(Math.random() * mockDrugs.length)];
+                
+                // Set the detected drug name in the search box
+                document.getElementById('ilacInput').value = detectedDrug;
+                
+                // Automatically search for the drug
+                ilacAra();
+                
+                showNotification(`🎯 Fotoğrafta "${detectedDrug}" tespit edildi! Bilgiler yükleniyor...`);
+            }, 2000);
         }
 
         // Drug search functionality
         function ilacAra() {
             const ilacAdi = document.getElementById('ilacInput').value.trim();
             if (!ilacAdi) {
-                showNotification("Lütfen bir ilaç ismi girin.", 'error');
+                showNotification("❌ Lütfen bir ilaç ismi girin.", 'error');
                 return;
             }
 
@@ -841,6 +1055,14 @@
                 'augmentin': {
                     name: 'Augmentin 1g',
                     description: 'Augmentin, amoksisilin ve klavulanik asit kombinasyonu içeren bir antibiyotiktir. Çeşitli bakteriyel enfeksiyonların tedavisinde kullanılır. Reçeteye bağlı bir ilaçtır ve doktor önerisi olmadan kullanılmamalıdır.'
+                },
+                'voltaren': {
+                    name: 'Voltaren 50mg',
+                    description: 'Voltaren, diklofenak sodyum etken maddeli antiinflamatuar bir ilaçtır. Kas ve eklem ağrılarında, romatizmal hastalıklarda kullanılır. Mide koruyucu ile birlikte alınması önerilir.'
+                },
+                'nexium': {
+                    name: 'Nexium 20mg',
+                    description: 'Nexium, esomeprazol etken maddeli bir proton pompa inhibitörüdür. Mide asidi fazlalığı, gastrit ve reflü hastalığının tedavisinde kullanılır. Genellikle yemekten önce alınır.'
                 }
             };
 
@@ -860,7 +1082,7 @@
                 block: 'start'
             });
 
-            showNotification(`${drug.name} bilgileri başarıyla yüklendi!`);
+            showNotification(`✅ ${drug.name} bilgileri başarıyla yüklendi!`);
         }
 
         // Add drug to list
@@ -872,7 +1094,7 @@
             const yemek = document.getElementById('yemek').value;
 
             if (!saat) {
-                showNotification("Lütfen bir saat seçin.", 'error');
+                showNotification("❌ Lütfen bir saat seçin.", 'error');
                 return;
             }
 
@@ -887,13 +1109,13 @@
                 id: Date.now() // Unique ID
             };
 
-            // Get existing drugs from localStorage
+            // Get existing drugs from memory
             let savedDrugs = JSON.parse(localStorage.getItem('userDrugs') || '[]');
             
             // Add new drug
             savedDrugs.push(drugEntry);
             
-            // Save to localStorage
+            // Save to memory
             localStorage.setItem('userDrugs', JSON.stringify(savedDrugs));
 
             // If day is "Her Gün", add to multiple dates in calendar
@@ -975,24 +1197,23 @@
 
         // Quick action functions
         function showCalendar() {
-            showNotification("İlaç takvimi açılıyor...");
-            // Here you would redirect to calendar page
+            showNotification("📅 İlaç takvimi açılıyor...");
             setTimeout(() => {
                 window.location.href = 'takvim.html';
             }, 1000);
         }
 
         function showReports() {
-            showNotification("Raporlar sayfası açılıyor...");
+            showNotification("📈 Raporlar sayfası açılıyor...");
             setTimeout(() => {
                 window.location.href = 'raporlar.html';
             }, 1000);
         }
 
         function showInteractions() {
-            showNotification("Etkileşim kontrolü başlatılıyor...");
+            showNotification("⚠️ Seçim kontrolü başlatılıyor...");
             setTimeout(() => {
-                window.location.href = 'etkilesim.html';
+                window.location.href = 'secim-kontrol.html';
             }, 1000);
         }
 
@@ -1037,21 +1258,10 @@
             document.getElementById('ilacInput').focus();
         });
 
-        // Close camera when clicking outside
-        document.addEventListener('click', function(e) {
-            const video = document.getElementById('kamera-video');
-            const cameraButton = document.querySelector('.icon-button');
-            
-            if (video.style.display === 'block' && 
-                !video.contains(e.target) && 
-                !cameraButton.contains(e.target)) {
-                
-                // Stop camera stream
-                if (video.srcObject) {
-                    video.srcObject.getTracks().forEach(track => track.stop());
-                }
-                video.style.display = 'none';
-                document.getElementById('camera-info').style.display = 'none';
+        // Cleanup when page unloads
+        window.addEventListener('beforeunload', () => {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
             }
         });
     </script>

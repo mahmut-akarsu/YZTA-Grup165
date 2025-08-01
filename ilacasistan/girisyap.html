@@ -397,10 +397,12 @@
             color: #667eea;
             text-decoration: none;
             font-weight: 600;
+            transition: all 0.3s ease;
         }
 
         .register-link a:hover {
             text-decoration: underline;
+            transform: translateY(-1px);
         }
 
         /* Messages */
@@ -482,13 +484,13 @@
     <header>
         <div class="container">
             <div class="header-content">
-                <a href="index.html" class="logo">
+                <a href="anasayfa.html" class="logo">
                     <div class="logo-icon"></div>
                     İlaçAsistan
                 </a>
                 <nav>
                     <ul>
-                        <li><a href="index.html">Ana Sayfa</a></li>
+                        <li><a href="anasayfa.html">Ana Sayfa</a></li>
                         <li><a href="hakkinda.html">Hakkında</a></li>
                         <li><a href="ilac-sorgula.html">İlaç Sorgula</a></li>
                         <li><a href="profilim.html">Profilim</a></li>
@@ -581,7 +583,7 @@
             </div>
 
             <div class="register-link">
-                Hesabınız yok mu? <a href="#" onclick="showRegister()">Kayıt Olun</a>
+                Hesabınız yok mu? <a href="kayit.html">Kayıt Olun</a>
             </div>
         </div>
     </div>
@@ -677,11 +679,6 @@
         // Forgot password
         function forgotPassword() {
             alert('Şifre sıfırlama özelliği yakında eklenecek!');
-        }
-
-        // Show register
-        function showRegister() {
-            alert('Kayıt özelliği yakında eklenecek!');
         }
 
         // Initialize page
