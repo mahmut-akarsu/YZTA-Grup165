@@ -232,35 +232,7 @@
                                 Şifreniz en az 8 karakter olmalıdır
                             </p>
                         </div>
-
-                        <!-- Doktor ID (sadece doktor seçildiğinde görünür) -->
-                        <div id="doktor-fields" class="border-t border-gray-200 pt-6" style="display: none;">
-                            <div class="bg-green-50 rounded-lg p-4 mb-4">
-                                <h3 class="text-sm font-medium text-green-800 mb-1">Doktor Bilgileri</h3>
-                                <p class="text-sm text-green-700">
-                                    Doktor olarak sisteme kaydolmak için kimlik bilgilerinizi girin
-                                </p>
-                            </div>
-                            
-                            <label for="drId" class="block text-sm font-medium text-gray-700 mb-2">
-                                Doktor ID *
-                            </label>
-                            <div class="relative">
-                                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                <input
-                                    type="text"
-                                    id="drId"
-                                    name="drId"
-                                    class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all duration-200"
-                                    placeholder="Dr. ID numaranızı girin"
-                                />
-                            </div>
-                            <p class="text-sm text-gray-500 mt-1">
-                                Doktor kimlik numaranızı girin
-                            </p>
-                        </div>
+                       
 
                         <!-- Kayıt Ol Butonu -->
                         <div class="pt-6">
@@ -304,19 +276,19 @@
     </div>
 
     <script>
-        let userType = 'hasta';
-        let showPassword = false;
+        var userType = 'patient';
+        var showPassword = false;
 
         function selectUserType(type) {
             userType = type;
             
             const hastaCard = document.getElementById('hasta-card');
             const doktorCard = document.getElementById('doktor-card');
-            const doktorFields = document.getElementById('doktor-fields');
             const submitBtn = document.getElementById('submit-btn');
             const drIdInput = document.getElementById('drId');
 
-            if (type === 'hasta') {
+            if (type === 'patient') {
+                console.log(userType)
                 hastaCard.className = 'relative cursor-pointer rounded-2xl border-2 card-selected-blue p-8 transition-all duration-200';
                 doktorCard.className = 'relative cursor-pointer rounded-2xl border-2 card-unselected p-8 transition-all duration-200';
                 
@@ -324,20 +296,18 @@
                 
                 doktorCard.innerHTML = '<div class="text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 bg-gray-100"><svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div><h3 class="text-xl font-semibold text-gray-900 mb-2">Doktor</h3><p class="text-gray-600 text-sm">Hastalarınızı takip edin, ilaç önerileri yapın</p></div>';
                 
-                doktorFields.style.display = 'none';
                 submitBtn.textContent = 'Hasta Hesabı Oluştur ve Profilime Git';
-                drIdInput.removeAttribute('required');
                 
             } else {
+                userType = 'doctor';
+                console.log(userType);
                 hastaCard.className = 'relative cursor-pointer rounded-2xl border-2 card-unselected p-8 transition-all duration-200';
                 doktorCard.className = 'relative cursor-pointer rounded-2xl border-2 card-selected-green p-8 transition-all duration-200';
                 
                 hastaCard.innerHTML = '<div class="text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 bg-gray-100"><svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg></div><h3 class="text-xl font-semibold text-gray-900 mb-2">Hasta</h3><p class="text-gray-600 text-sm">İlaç takibi yapın, doktorlarınızla iletişim kurun</p></div>';
                 
                 doktorCard.innerHTML = '<div class="absolute top-0 left-0 w-full h-1 bg-green-500 rounded-t-2xl"></div><div class="text-center"><div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 bg-green-100"><svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div><h3 class="text-xl font-semibold text-gray-900 mb-2">Doktor</h3><p class="text-gray-600 text-sm">Hastalarınızı takip edin, ilaç önerileri yapın</p></div>';
-                
-                doktorFields.style.display = 'block';
-                doktorFields.className = 'border-t border-gray-200 pt-6 animate-fadeIn';
+
                 submitBtn.textContent = 'Doktor Hesabı Oluştur ve Panelime Git';
                 drIdInput.setAttribute('required', 'required');
             }
@@ -358,51 +328,62 @@
             }
         }
 
-        function handleSubmit(event) {
-            event.preventDefault();
+       async function handleSubmit(event) {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const data = {
+        name: formData.get('ad'),
+        surname: formData.get('soyad'),
+        email: formData.get('email'),
+        password: formData.get('sifre'),
+        role_id: userType // "doktor" veya "hasta"
+    };
+
+    // Validasyon
+    if (!data.name || !data.surname || !data.email || !data.password) {
+        alert('Lütfen tüm zorunlu alanları doldurun.');
+        return;
+    }
+
+    if (data.password.length < 8) {
+        alert('Şifre en az 8 karakter olmalıdır.');
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:8080/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert('Kayıt başarılı! Yönlendiriliyorsunuz...');
             
-            const formData = new FormData(event.target);
-            const data = {
-                ad: formData.get('ad'),
-                soyad: formData.get('soyad'),
-                email: formData.get('email'),
-                sifre: formData.get('sifre'),
-                drId: formData.get('drId'),
-                userType: userType
-            };
-            
-            // Form validasyonu
-            if (!data.ad || !data.soyad || !data.email || !data.sifre) {
-                alert('Lütfen tüm zorunlu alanları doldurun.');
-                return;
-            }
-            
-            if (userType === 'doktor' && !data.drId) {
-                alert('Lütfen Doktor ID\'nizi girin.');
-                return;
-            }
-            
-            if (data.sifre.length < 8) {
-                alert('Şifre en az 8 karakter olmalıdır.');
-                return;
-            }
-            
-            console.log('Kayıt bilgileri:', data);
-            
-            // Kayıt işlemi başarılı olduktan sonra kullanıcı tipine göre yönlendirme
-            if (userType === 'doktor') {
-                alert('Doktor hesabınız başarıyla oluşturuldu! Panele yönlendiriliyorsunuz...');
-                // window.location.href = 'doktor-paneli.html';
+            if (userType === 'doctor') {
+                window.location.href = 'doktor-paneli.html';
             } else {
-                alert('Hesabınız başarıyla oluşturuldu! Profilinize yönlendiriliyorsunuz...');
-                // window.location.href = 'profilim.html';
+                window.location.href = 'profilim.html';
             }
+        } else {
+            // Sunucudan gelen hata mesajı varsa göster
+            alert(result.detail || 'Kayıt sırasında bir hata oluştu.');
         }
+    } catch (error) {
+        console.error('Kayıt hatası:', error);
+        alert('Sunucuya bağlanılamadı. Lütfen daha sonra tekrar deneyin.');
+    }
+}
 
         function handleGirisYap() {
             // Giriş yap sayfasına yönlendirme
             console.log('Giriş yap sayfasına yönlendiriliyor...');
-            // window.location.href = 'giris-yap.html';
+            window.location.href = 'giris-yap.html';
         }
 
         function handleAnaSayfa() {

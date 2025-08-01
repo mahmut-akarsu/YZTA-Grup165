@@ -603,79 +603,87 @@
             event.target.closest('.user-type-option').classList.add('selected');
         }
 
-        // Handle login
-        function handleLogin(event) {
-            event.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const loginButton = document.getElementById('loginButton');
-            const loading = document.getElementById('loading');
-            const errorMessage = document.getElementById('errorMessage');
-            const successMessage = document.getElementById('successMessage');
+       
+        async function handleLogin(event) {
+    event.preventDefault();
+    
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const loginButton = document.getElementById('loginButton');
+    const loading = document.getElementById('loading');
+    const errorMessage = document.getElementById('errorMessage');
+    const successMessage = document.getElementById('successMessage');
 
-            // Clear previous messages
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'none';
+    // Clear previous messages
+    errorMessage.style.display = 'none';
+    successMessage.style.display = 'none';
 
-            // Basic validation
-            if (!username || !password) {
-                errorMessage.textContent = 'Lütfen tüm alanları doldurun!';
-                errorMessage.style.display = 'block';
-                return;
+    if (!username || !password) {
+        errorMessage.textContent = 'Lütfen tüm alanları doldurun!';
+        errorMessage.style.display = 'block';
+        return;
+    }
+
+    // Show loading
+    loading.style.display = 'inline-block';
+    loginButton.disabled = true;
+
+    try {
+        const response = await fetch('http://localhost:8000/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: username,
+                password: password
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Başarılı giriş
+            successMessage.textContent = 'Giriş başarılı! Yönlendiriliyorsunuz...';
+            successMessage.style.display = 'block';
+
+            // Kullanıcı tipi belirleme
+            let userType = selectedUserType;
+            let userID = username;
+            if (username.startsWith('DR') || username.startsWith('dr')) {
+                userType = 'doktor';
+                userID = username.toUpperCase();
             }
 
-            // Show loading
-            loading.style.display = 'inline-block';
-            loginButton.disabled = true;
+            localStorage.setItem('currentUser', JSON.stringify({
+                username: username,
+                userType: userType,
+                userID: userID,
+                loginTime: new Date().toISOString(),
+                token: data.access_token || null // Eğer token dönerse
+            }));
 
-            // Simulate login process
             setTimeout(() => {
-                // Determine user type based on username/ID
-                let userType = selectedUserType;
-                let userID = username;
-                
-                // If username starts with DR, it's a doctor
-                if (username.startsWith('DR') || username.startsWith('dr')) {
-                    userType = 'doktor';
-                    userID = username.toUpperCase();
-                }
-                
-                // Simple authentication (in real app, this would be server-side)
-                if (password.length >= 6) {
-                    // Successful login
-                    successMessage.textContent = 'Giriş başarılı! Yönlendiriliyorsunuz...';
-                    successMessage.style.display = 'block';
-                    
-                    // Save user data
-                    localStorage.setItem('currentUser', JSON.stringify({
-                        username: username,
-                        userType: userType,
-                        userID: userID,
-                        loginTime: new Date().toISOString()
-                    }));
-                    
-                    // Redirect based on user type
-                    setTimeout(() => {
-                        if (userType === 'doktor') {
-                            window.location.href = 'doktor-profil.html';
-                        } else {
-                            window.location.href = 'profilim.html';
-                        }
-                    }, 2000);
-                    
+                if (userType === 'doktor') {
+                    window.location.href = 'doktor-profil.html';
                 } else {
-                    // Failed login
-                    errorMessage.textContent = 'Şifre en az 6 karakter olmalıdır!';
-                    errorMessage.style.display = 'block';
+                    window.location.href = 'profilim.html';
                 }
-
-                // Hide loading
-                loading.style.display = 'none';
-                loginButton.disabled = false;
-            }, 1500);
+            }, 2000);
+        } else {
+            // Başarısız giriş
+            errorMessage.textContent = data.detail || 'Giriş başarısız!';
+            errorMessage.style.display = 'block';
         }
 
+    } catch (err) {
+        errorMessage.textContent = 'Sunucuya bağlanılamadı.';
+        errorMessage.style.display = 'block';
+    } finally {
+        loading.style.display = 'none';
+        loginButton.disabled = false;
+    }
+}
         // Forgot password
         function forgotPassword() {
             alert('Şifre sıfırlama özelliği yakında eklenecek!');
