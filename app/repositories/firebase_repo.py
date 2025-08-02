@@ -6,6 +6,8 @@ from app.models.drug import Drug
 import uuid
 from typing import List, Optional
 from datetime import datetime
+import time
+import hashlib
 
 def generate_basic_user_id(role: str) -> str:
     if role.lower() == "doctor":
@@ -45,12 +47,37 @@ def add_drug_for_patient(drug_data: dict) -> str:
 # User drugs subcollection functions
 def add_drug_for_user(user_id: str, drug_data: dict) -> str:
     """Add a drug to user's drugs subcollection"""
-    drug_id = str(uuid.uuid4())
-    drug_data["drug_id"] = drug_id
-    
-    # Add drug to user's drugs subcollection
-    db.collection("users").document(user_id).collection("drugs").document(drug_id).set(drug_data)
-    return drug_id
+    try:
+        print(f"=== ADD DRUG FOR USER DEBUG ===")
+        print(f"User ID: {user_id}")
+        print(f"Drug data: {drug_data}")
+        
+        # Check if drug with same name already exists
+        drug_name = drug_data.get("name", "").strip()
+        existing_drug = check_drug_exists_by_name(user_id, drug_name)
+        
+        if existing_drug:
+            print(f"Drug with name '{drug_name}' already exists")
+            print(f"=== ADD DRUG FOR USER DEBUG END ===")
+            raise Exception(f"Drug with name '{drug_name}' already exists for this user")
+        
+        # Generate unique drug ID based on name and user
+        drug_id = generate_drug_id(drug_name, user_id)
+        drug_data["drug_id"] = drug_id
+        
+        print(f"Generated drug ID: {drug_id}")
+        
+        # Add drug to user's drugs subcollection
+        db.collection("users").document(user_id).collection("drugs").document(drug_id).set(drug_data)
+        
+        print(f"Drug added successfully with ID: {drug_id}")
+        print(f"=== ADD DRUG FOR USER DEBUG END ===")
+        return drug_id
+        
+    except Exception as e:
+        print(f"Error adding drug for user: {str(e)}")
+        print(f"=== ADD DRUG FOR USER DEBUG END ===")
+        raise e
 
 def get_user_drugs(user_id: str) -> List[dict]:
     """Get all drugs for a specific user"""
@@ -320,6 +347,39 @@ def get_all_patients_for_doctor() -> List[dict]:
             patients.append(user_data)
     
     return patients
+
+def generate_drug_id(drug_name: str, user_id: str) -> str:
+    """Generate a unique drug ID based on drug name and user ID"""
+    # Create a hash from drug name and user ID
+    combined = f"{drug_name.lower().strip()}_{user_id}"
+    hash_object = hashlib.md5(combined.encode())
+    hash_hex = hash_object.hexdigest()[:8]  # Take first 8 characters
+    return f"DRUG_{hash_hex.upper()}"
+
+def check_drug_exists_by_name(user_id: str, drug_name: str) -> Optional[dict]:
+    """Check if a drug with the same name already exists for the user"""
+    try:
+        print(f"=== DRUG NAME CHECK DEBUG ===")
+        print(f"Checking for drug name: {drug_name} for user: {user_id}")
+        
+        drugs_ref = db.collection("users").document(user_id).collection("drugs")
+        query = drugs_ref.where("name", "==", drug_name.strip()).limit(1).stream()
+        
+        for doc in query:
+            drug_data = doc.to_dict()
+            drug_data["drug_id"] = doc.id
+            print(f"Found existing drug: {drug_data}")
+            print(f"=== DRUG NAME CHECK DEBUG END ===")
+            return drug_data
+            
+        print(f"No existing drug found with name: {drug_name}")
+        print(f"=== DRUG NAME CHECK DEBUG END ===")
+        return None
+        
+    except Exception as e:
+        print(f"Error checking drug by name: {str(e)}")
+        print(f"=== DRUG NAME CHECK DEBUG END ===")
+        return None
 
 
 

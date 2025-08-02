@@ -1,13 +1,16 @@
 from fastapi import FastAPI
-from app.api.v1.endpoints import auth, drug, doctor, ocr, gemini
+from app.api.v1.endpoints import auth
+from app.api.v1.endpoints import drug 
+from app.api.v1.endpoints import doctor ,  ocr
+# from app.api.v1.endpoints import gemini  # Geçici olarak devre dışı
 
 app = FastAPI()
 
 app.include_router(auth.router)
-app.include_router(drug.router)
+app.include_router(drug.router) 
 app.include_router(doctor.router)
 app.include_router(ocr.router)
-app.include_router(gemini.router, prefix="/gemini", tags=["gemini"])
+# app.include_router(gemini.router, prefix="/gemini", tags=["gemini"])  # Geçici olarak devre dışı
 
 @app.get("/")
 def read_root():

@@ -9,7 +9,7 @@ load_dotenv()  # Load environment variables from .env file
 
 # Build a robust path to the credentials file
 # This ensures the file is found regardless of the script's working directory
-cred_path = Path(__file__).resolve().parent.parent.parent / "yzta-projesi-firebase-adminsdk-fbsvc-6257389f93.json"
+cred_path = Path(__file__).resolve().parent.parent.parent / "yzta-bootcamp-562b2-firebase-adminsdk-fbsvc-6ec3928196.json"
 
 if not firebase_admin._apps:
     cred = credentials.Certificate(cred_path)

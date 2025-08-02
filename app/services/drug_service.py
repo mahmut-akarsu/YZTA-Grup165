@@ -1,4 +1,4 @@
-from app.models.drug import Drug
+from app.models.drug import Drug, DrugCreate, DrugUpdate, DrugResponse
 from app.repositories.firebase_repo import (
     add_drug_for_user,
     get_user_drugs,
@@ -13,13 +13,43 @@ from fastapi import HTTPException, status
 from typing import List, Optional
 from datetime import datetime
 
-def add_drug_to_user(user_id: str, drug_data: Drug) -> dict:
+def add_drug_to_user(user_id: str, drug_data: DrugCreate) -> dict:
     """Add a drug to user's drug list"""
     try:
+        print(f"=== ADD DRUG TO USER SERVICE DEBUG ===")
+        print(f"User ID: {user_id}")
+        print(f"Drug data: {drug_data.dict()}")
+        
+        # Check if drug with same name already exists
+        drug_name = drug_data.name.strip()
+        
+        # Get existing drugs to check for duplicates
+        existing_drugs = get_user_drug_list(user_id)
+        for existing_drug in existing_drugs:
+            if existing_drug.get("name", "").strip().lower() == drug_name.lower():
+                print(f"Drug with name '{drug_name}' already exists")
+                raise HTTPException(
+                    status_code=400, 
+                    detail=f"Drug with name '{drug_name}' already exists for this user"
+                )
+        
         drug_dict = drug_data.dict()
+        drug_dict["user_id"] = user_id
+        drug_dict["created_at"] = datetime.now()
+        drug_dict["updated_at"] = datetime.now()
+        
         drug_id = add_drug_for_user(user_id, drug_dict)
-        return {"drug_id": drug_id, "message": "Drug added successfully"}
+        
+        # Return the created drug with all fields
+        created_drug = get_user_drug_by_id(user_id, drug_id)
+        print(f"Drug created successfully: {created_drug}")
+        print(f"=== ADD DRUG TO USER SERVICE DEBUG END ===")
+        return created_drug
+        
+    except HTTPException:
+        raise
     except Exception as e:
+        print(f"Error in add_drug_to_user: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error adding drug: {str(e)}")
 
 def get_user_drug_list(user_id: str) -> List[dict]:
@@ -56,6 +86,9 @@ def update_drug_info(user_id: str, drug_id: str, drug_data: dict) -> dict:
         if not update_data:
             raise HTTPException(status_code=400, detail="No fields to update")
         
+        # Add updated_at timestamp
+        update_data["updated_at"] = datetime.now()
+        
         success = update_user_drug(user_id, drug_id, update_data)
         if not success:
             raise HTTPException(status_code=500, detail="Failed to update drug")
@@ -85,6 +118,45 @@ def delete_drug_info(user_id: str, drug_id: str) -> dict:
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error deleting drug: {str(e)}")
+
+def mark_drug_as_taken(user_id: str, drug_id: str) -> dict:
+    """Mark a drug as taken at current time"""
+    try:
+        # Check if drug exists
+        existing_drug = get_user_drug_by_id(user_id, drug_id)
+        if not existing_drug:
+            raise HTTPException(status_code=404, detail="Drug not found")
+        
+        current_time = datetime.now()
+        
+        # Update last_used timestamp
+        update_data = {
+            "last_used": current_time,
+            "updated_at": current_time
+        }
+        
+        success = update_user_drug(user_id, drug_id, update_data)
+        if not success:
+            raise HTTPException(status_code=500, detail="Failed to update drug usage")
+        
+        # Also record detailed usage
+        usage_data = {
+            "usage_time": current_time,
+            "notes": "Taken via web interface"
+        }
+        usage_id = record_drug_usage_repo(user_id, drug_id, usage_data)
+        
+        return {
+            "message": "Drug marked as taken successfully",
+            "drug_id": drug_id,
+            "drug_name": existing_drug.get("name", "Unknown"),
+            "taken_at": current_time.isoformat(),
+            "usage_id": usage_id
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error marking drug as taken: {str(e)}")
 
 # Drug usage tracking functions
 def record_drug_usage(user_id: str, drug_id: str, usage_data: dict) -> dict:
