@@ -1,0 +1,43 @@
+# Database files
+drug_database.csv
+
+# Firebase configuration files
+drugproject-c31ef-firebase-adminsdk-fbsvc-444475ea21.json
+*.json
+firebase-adminsdk-*.json
+yzta-grup165-firebase-adminsdk-*.json
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+
