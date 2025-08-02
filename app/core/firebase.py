@@ -6,7 +6,7 @@ import os
 
 load_dotenv()  # Load environment variables from .env file
 
-cred_path = os.getenv("FIREBASE_CREDENTIALS")
+cred_path = "yzta-grup165-firebase-adminsdk-fbsvc-b24c7f9b69.json"
 if not firebase_admin._apps:
     cred = credentials.Certificate(cred_path)
     firebase_admin.initialize_app(cred)
