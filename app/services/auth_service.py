@@ -5,6 +5,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 import os
+from datetime import datetime
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 SECRET_KEY = os.getenv("SECRET_KEY", "super-secret")
@@ -37,12 +38,28 @@ def register_user(user: UserRegister):
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
+    # Validate doctor-specific fields
+    if user.role_id.lower() == "doctor":
+        if not user.hospital or not user.specialization:
+            raise HTTPException(
+                status_code=400, 
+                detail="Hospital and specialization are required for doctors"
+            )
+    else:
+        # Clear doctor-specific fields for non-doctors
+        user.hospital = None
+        user.specialization = None
+
     user_dict = {
         "name": user.name,
         "surname": user.surname,
         "email": user.email,
         "password": hash_password(user.password),
         "role_id": user.role_id,
+        "birth_date": user.birth_date.isoformat(),  # Convert date to string
+        "hospital": user.hospital,
+        "specialization": user.specialization,
+        "created_at": datetime.now().isoformat()
     }
 
     user_id = create_user(user_dict)
@@ -51,7 +68,11 @@ def register_user(user: UserRegister):
         "name": user.name,
         "surname": user.surname,
         "email": user.email,
-        "role_id": user.role_id
+        "role_id": user.role_id,
+        "birth_date": user.birth_date.isoformat(),
+        "hospital": user.hospital,
+        "specialization": user.specialization,
+        "created_at": user_dict["created_at"]
     }
 
 def get_current_user(token: str = Depends(oauth2_scheme)):
@@ -89,6 +110,21 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
     if user is None:
         print("USER BULUNAMADI!")
         raise credentials_exception
+    
+    # Ensure all required fields are present
+    user_data = {
+        "user_id": user.get("user_id"),
+        "name": user.get("name"),
+        "surname": user.get("surname"),
+        "email": user.get("email"),
+        "role_id": user.get("role_id"),
+        "birth_date": user.get("birth_date"),
+        "hospital": user.get("hospital"),
+        "specialization": user.get("specialization"),
+        "created_at": user.get("created_at")
+    }
+    
+    print("USER DATA:", user_data)
     print("=== AUTH DEBUG END ===")
-    return user
+    return user_data
 

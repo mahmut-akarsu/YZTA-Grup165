@@ -206,4 +206,56 @@ def get_all_drug_usage(user_id: str) -> List[dict]:
         all_usage = get_all_drug_usage_for_user(user_id)
         return all_usage
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error fetching all drug usage: {str(e)}") 
+        raise HTTPException(status_code=500, detail=f"Error fetching all drug usage: {str(e)}")
+
+def update_drug_status(user_id: str, drug_id: str, new_status: str) -> dict:
+    """Update drug status (active, inactive)"""
+    try:
+        print(f"=== UPDATE DRUG STATUS DEBUG ===")
+        print(f"User ID: {user_id}")
+        print(f"Drug ID: {drug_id}")
+        print(f"New Status: {new_status}")
+        
+        # Check if drug exists
+        existing_drug = get_user_drug_by_id(user_id, drug_id)
+        if not existing_drug:
+            raise HTTPException(status_code=404, detail="Drug not found")
+        
+        # Validate status
+        valid_statuses = ["active", "inactive"]
+        if new_status.lower() not in valid_statuses:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Invalid status. Must be one of: {valid_statuses}"
+            )
+        
+        # Update status
+        update_data = {
+            "status": new_status.lower(),
+            "updated_at": datetime.now()
+        }
+        
+        success = update_user_drug(user_id, drug_id, update_data)
+        if not success:
+            raise HTTPException(status_code=500, detail="Failed to update drug status")
+        
+        # Get updated drug
+        updated_drug = get_user_drug_by_id(user_id, drug_id)
+        
+        print(f"Drug status updated successfully")
+        print(f"=== UPDATE DRUG STATUS DEBUG END ===")
+        
+        return {
+            "message": f"Drug status updated to {new_status}",
+            "drug_id": drug_id,
+            "drug_name": updated_drug.get("name", "Unknown"),
+            "old_status": existing_drug.get("status", "unknown"),
+            "new_status": new_status.lower(),
+            "updated_drug": updated_drug
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error in update_drug_status: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error updating drug status: {str(e)}") 
