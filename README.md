@@ -180,11 +180,11 @@ Daily Scrum toplantıları düzenli olarak gerçekleştirildi. Backend geliştir
 ## 🖥 *Ürün Durumu:*
 
 ### FastAPI Backend API Dokümantasyonu
-![Doctor API Endpoints](sprint3/istek.jpg)
+![Doctor API Endpoints](sprint3/istek.png)
 Doktor modülü için geliştirilen API endpoint'leri - hasta listesi, hasta bilgileri, ilaç takibi ve kullanım raporları
 
 ### Firebase Firestore Veritabanı Yapısı
-![Firebase Database Structure](sprint3/firebase.jpg)
+![Firebase Database Structure](sprint3/firebase.png)
 Kullanıcı koleksiyonu ve ilaç verileri - users, drugs koleksiyonları ile hiyerarşik veri yapısı
 
 ### Kullanıcı Yönetimi ve İlaç Takip Sistemi
