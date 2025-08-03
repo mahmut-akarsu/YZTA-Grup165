@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İlaçAsistan - Raporlarım | İlaç Kullanım İstatistikleri</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .logo-icon::before {
+            content: '+';
+            color: #ff4757;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        nav a:hover, nav a.active {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .login-btn {
+            background: rgba(255,255,255,0.15) !important;
+            border: 1px solid rgba(255,255,255,0.3) !important;
+        }
+
+        .login-btn:hover {
+            background: rgba(255,255,255,0.3) !important;
+            border-color: rgba(255,255,255,0.5) !important;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 120px 0 60px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            top: -200px;
+            right: -200px;
+            animation: float 12s ease-in-out infinite;
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+            bottom: -150px;
+            left: -150px;
+            animation: float 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 40px 0;
+        }
+
+        /* Summary Cards */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+        }
+
+        .summary-card:nth-child(1)::before {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .summary-card:nth-child(2)::before {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+        }
+
+        .summary-card:nth-child(3)::before {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        .summary-card:nth-child(4)::before {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+
+        .summary-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .summary-card:nth-child(1) .summary-icon {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .summary-card:nth-child(2) .summary-icon {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+        }
+
+        .summary-card:nth-child(3) .summary-icon {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        .summary-card:nth-child(4) .summary-icon {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+
+        .summary-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .summary-label {
+            color: #666;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .summary-change {
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            padding: 5px 10px;
+            border-radius: 15px;
+            display: inline-block;
+        }
+
+        .positive {
+            background: rgba(67, 233, 123, 0.2);
+            color: #28a745;
+        }
+
+        .negative {
+            background: rgba(255, 107, 107, 0.2);
+            color: #dc3545;
+        }
+
+        /* Report Sections */
+        .report-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .report-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .export-button {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .export-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(67, 233, 123, 0.4);
+        }
+
+        /* Charts */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 2rem 0;
+        }
+
+        .chart-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 1.1rem;
+            border: 2px dashed #ddd;
+        }
+
+        /* Drug List Table */
+        .drug-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .drug-table th,
+        .drug-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .drug-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .drug-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .compliance-rate {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .excellent {
+            background: rgba(67, 233, 123, 0.2);
+            color: #28a745;
+        }
+
+        .good {
+            background: rgba(79, 172, 254, 0.2);
+            color: #007bff;
+        }
+
+        .needs-improvement {
+            background: rgba(255, 193, 7, 0.2);
+            color: #856404;
+        }
+
+        .poor {
+            background: rgba(255, 107, 107, 0.2);
+            color: #dc3545;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-left: 1rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .timeline-date {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-content {
+            color: #666;
+        }
+
+        /* Insights */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .insight-card {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insight-card:nth-child(2) {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+
+        .insight-card:nth-child(3) {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+        }
+
+        .insight-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: rotate(45deg);
+        }
+
+        .insight-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .insight-content {
+            position: relative;
+            z-index: 2;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #3498db;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section ul li a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: #3498db;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #34495e;
+            color: #95a5a6;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .drug-table {
+                font-size: 0.9rem;
+            }
+
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="anasayfa.html" class="logo">
+                    <div class="logo-icon"></div>
+                    İlaçAsistan
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="anasayfa.html">Ana Sayfa</a></li>
+                        <li><a href="hakkinda.html">Hakkında</a></li>
+                        <li><a href="ilac-sorgula.html">İlaç Sorgula</a></li>
+                        <li><a href="profilim.html">Profilim</a></li>
+                        
+                        <li><a href="girisyap.html" class="login-btn">Giriş Yap</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>📈 Raporlarım</h1>
+            <p>İlaç kullanım istatistiklerinizi ve analiz sonuçlarınızı görüntüleyin</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            
+            <!-- Summary Cards -->
+            <section class="summary-cards fade-in">
+                <div class="summary-card">
+                    <div class="summary-icon">💊</div>
+                    <div class="summary-number">24</div>
+                    <div class="summary-label">Toplam İlaç</div>
+                    <div class="summary-change positive">+2 bu ay</div>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="summary-icon">✅</div>
+                    <div class="summary-number">87%</div>
+                    <div class="summary-label">Uyum Oranı</div>
+                    <div class="summary-change positive">+5% bu ay</div>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="summary-icon">⏰</div>
+                    <div class="summary-number">156</div>
+                    <div class="summary-label">Alınan Doz</div>
+                    <div class="summary-change positive">Bu ay</div>
+                </div>
+                
+                <div class="summary-card">
+                    <div class="summary-icon">🎯</div>
+                    <div class="summary-number">3</div>
+                    <div class="summary-label">Aktif İlaç</div>
+                    <div class="summary-change negative">-1 bu hafta</div>
+                </div>
+            </section>
+
+            <!-- Compliance Chart -->
+            <section class="report-section fade-in">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <div class="section-icon">📊</div>
+                        Uyum Grafiği
+                    </h2>
+                    <button class="export-button" onclick="exportChart()">📥 Dışa Aktar</button>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-placeholder">
+                        📊 Uyum grafiği burada görünecek<br>
+                        <small>Son 30 günlük ilaç alma uyum oranlarınız</small>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Drug List -->
+            <section class="report-section fade-in">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <div class="section-icon">💊</div>
+                        İlaç Listesi ve Uyum Oranları
+                    </h2>
+                    <button class="export-button" onclick="exportDrugList()">📥 Listeyi Dışa Aktar</button>
+                </div>
+                
+                <table class="drug-table">
+                    <thead>
+                        <tr>
+                            <th>İlaç Adı</th>
+                            <th>Günlük Doz</th>
+                            <th>Başlangıç Tarihi</th>
+                            <th>Uyum Oranı</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Parol 500mg</strong></td>
+                            <td>2x1 tablet</td>
+                            <td>15 Ocak 2025</td>
+                            <td><span class="compliance-rate excellent">95%</span></td>
+                            <td>Aktif</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Augmentin 1g</strong></td>
+                            <td>2x1 tablet</td>
+                            <td>18 Ocak 2025</td>
+                            <td><span class="compliance-rate good">82%</span></td>
+                            <td>Aktif</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Vitamin D3</strong></td>
+                            <td>1x1 kapsül</td>
+                            <td>10 Ocak 2025</td>
+                            <td><span class="compliance-rate excellent">98%</span></td>
+                            <td>Aktif</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Aspirin 100mg</strong></td>
+                            <td>1x1 tablet</td>
+                            <td>05 Ocak 2025</td>
+                            <td><span class="compliance-rate needs-improvement">65%</span></td>
+                            <td>Tamamlandı</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Timeline -->
+            <section class="report-section fade-in">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <div class="section-icon">🕒</div>
+                        İlaç Geçmişi
+                    </h2>
+                    <button class="export-button" onclick="exportTimeline()">📥 Geçmişi Dışa Aktar</button>
+                </div>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">20 Ocak 2025</div>
+                        <div class="timeline-content">
+                            <strong>Yeni ilaç eklendi:</strong> Parol 500mg tedaviye başlandı. Günde 2 doz alınacak.
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">18 Ocak 2025</div>
+                        <div class="timeline-content">
+                            <strong>İlaç değişikliği:</strong> Augmentin 1g dozaj güncellendi. Yeni doz: 2x1 tablet.
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">15 Ocak 2025</div>
+                        <div class="timeline-content">
+                            <strong>Tedavi tamamlandı:</strong> Aspirin 100mg 10 günlük tedavi süresi tamamlandı.
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">10 Ocak 2025</div>
+                        <div class="timeline-content">
+                            <strong>İlk kayıt:</strong> İlaçAsistan hesabınız oluşturuldu ve Vitamin D3 eklendi.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Insights -->
+            <section class="report-section fade-in">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <div class="section-icon">💡</div>
+                        Kişisel Öneriler
+                    </h2>
+                </div>
+                
+                <div class="insights-grid">
+                    <div class="insight-card">
+                        <div class="insight-title">🎯 Uyum Artırma</div>
+                        <div class="insight-content">
+                            Aspirin ilaç uyumunuz %65 seviyesinde. Hatırlatmaları aktifleştirerek uyum oranınızı artırabilirsiniz.
+                        </div>
+                    </div>
+                    
+                    <div class="insight-card">
+                        <div class="insight-title">⏰ En İyi Zaman</div>
+                        <div class="insight-content">
+                            İstatistiklerinize göre sabah 08:00 ve akşam 20:00 saatlerinde ilaç almayı en az unutuyorsunuz.
+                        </div>
+                    </div>
+                    
+                    <div class="insight-card">
+                        <div class="insight-title">📈 İlerleme</div>
+                        <div class="insight-content">
+                            Bu ay genel uyum oranınız %5 arttı. Harika bir ilerleme gösteriyorsunuz!
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>İlaçAsistan</h3>
+                    <p>Güvenli ilaç kullanımı için en gelişmiş dijital asistanınız. Sağlığınız bizim önceliğimiz.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hızlı Linkler</h3>
+                    <ul>
+                        <li><a href="anasayfa.html">Ana Sayfa</a></li>
+                        <li><a href="hakkinda.html">Hakkında</a></li>
+                        <li><a href="ilac-sorgula.html">İlaç Sorgula</a></li>
+                        <li><a href="profilim.html">Profilim</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Destek</h3>
+                    <ul>
+                        <li><a href="sss.html">SSS</a></li>
+                        <li><a href="iletisim.html">İletişim</a></li>
+                        <li><a href="kullanim-kilavuzu.html">Kullanım Kılavuzu</a></li>
+                        <li><a href="gizlilik-politikasi.html">Gizlilik Politikası</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>İletişim</h3>
+                    <ul>
+                        <li>📧 info@ilacasistan.com</li>
+                        <li>📞 +90 (212) 123 45 67</li>
+                        <li>📍 İstanbul, Türkiye</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 İlaçAsistan. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Export functions
+        function exportChart() {
+            alert('📊 Uyum grafiği PDF olarak dışa aktarılıyor...');
+            // Here you would implement actual export functionality
+        }
+
+        function exportDrugList() {
+            alert('💊 İlaç listesi Excel dosyası olarak dışa aktarılıyor...');
+            // Here you would implement actual export functionality
+        }
+
+        function exportTimeline() {
+            alert('🕒 İlaç geçmişi PDF raporu olarak dışa aktarılıyor...');
+            // Here you would implement actual export functionality
+        }
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Header background on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(102, 126, 234, 0.95)';
+            } else {
+                header.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            }
+        });
+
+        // Simulate real-time updates
+        setInterval(() => {
+            const complianceElement = document.querySelector('.summary-card:nth-child(2) .summary-number');
+            const currentRate = parseInt(complianceElement.textContent);
+            
+            // Random small fluctuation for demo
+            if (Math.random() > 0.7) {
+                const change = Math.random() > 0.5 ? 1 : -1;
+                const newRate = Math.max(75, Math.min(100, currentRate + change));
+                complianceElement.textContent = newRate + '%';
+            }
+        }, 30000); // Update every 30 seconds
+
+        // Interactive table row highlighting
+        document.querySelectorAll('.drug-table tbody tr').forEach(row => {
+            row.addEventListener('click', function() {
+                // Remove previous selection
+                document.querySelectorAll('.drug-table tbody tr').forEach(r => r.style.background = '');
+                // Highlight selected row
+                this.style.background = 'rgba(102, 126, 234, 0.1)';
+                
+                const drugName = this.querySelector('td:first-child strong').textContent;
+                alert(`${drugName} detayları görüntüleniyor...`);
+            });
+        });
+
+        // Add dynamic data loading simulation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate loading data
+            setTimeout(() => {
+                // Update compliance rates dynamically
+                const rates = document.querySelectorAll('.compliance-rate');
+                rates.forEach(rate => {
+                    const currentValue = parseInt(rate.textContent);
+                    // Add slight animation effect
+                    rate.style.animation = 'pulse 0.5s ease-in-out';
+                });
+            }, 1000);
+
+            // Add tooltip functionality to summary cards
+            document.querySelectorAll('.summary-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    const label = this.querySelector('.summary-label').textContent;
+                    this.setAttribute('title', `${label} hakkında detaylı bilgi için tıklayın`);
+                });
+            });
+        });
+
+        // Add CSS animation for pulse effect
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

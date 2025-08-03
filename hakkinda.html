@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İlaçAsistan - Hakkında | Güvenli İlaç Takibi ve Etkileşim Kontrolü</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .logo-icon::before {
+            content: '+';
+            color: #ff4757;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        nav a:hover, nav a.active {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .login-btn {
+            background: rgba(255,255,255,0.15) !important;
+            border: 1px solid rgba(255,255,255,0.3) !important;
+        }
+
+        .login-btn:hover {
+            background: rgba(255,255,255,0.3) !important;
+            border-color: rgba(255,255,255,0.5) !important;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 120px 0 80px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+            top: -50px;
+            right: -100px;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            bottom: -50px;
+            left: -50px;
+            animation: float 6s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 100px 0;
+            background: #f8f9fa;
+        }
+
+        .content-section {
+            background: white;
+            margin-bottom: 3rem;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .content-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .section-content {
+            padding: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-right: 1.5rem;
+            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.3);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #333;
+            margin: 0;
+        }
+
+        .section-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 2rem;
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .features-list li {
+            padding: 1rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .features-list li:last-child {
+            border-bottom: none;
+        }
+
+        .features-list li::before {
+            content: '✓';
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .features-list li strong {
+            color: #333;
+            margin-right: 0.5rem;
+        }
+
+        /* Target Audience Cards */
+        .audience-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .audience-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .audience-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: rotate(45deg);
+            transition: all 0.3s ease;
+        }
+
+        .audience-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(240, 147, 251, 0.4);
+        }
+
+        .audience-card:hover::before {
+            transform: rotate(45deg) scale(1.2);
+        }
+
+        .audience-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .audience-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .audience-card p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Alternative colors for cards */
+        .audience-card:nth-child(2) {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .audience-card:nth-child(3) {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .audience-card:nth-child(4) {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 60px 0 30px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #3498db;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section ul li a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: #3498db;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #34495e;
+            color: #95a5a6;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.6s ease;
+        }
+
+        .slide-in-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide-in-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.6s ease;
+        }
+
+        .slide-in-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+
+            .page-header {
+                padding: 100px 0 60px;
+            }
+
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+
+            .section-content {
+                padding: 2rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .section-icon {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+
+            .audience-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="anasayfa.html" class="logo">
+                    <div class="logo-icon"></div>
+                    İlaçAsistan
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="anasayfa.html">Ana Sayfa</a></li>
+                        <li><a href="hakkinda.html" class="active">Hakkında</a></li>
+                        <li><a href="ilac-sorgula.html">İlaç Sorgula</a></li>
+                        <li><a href="profilim.html">Profilim</a></li>
+                        <li><a href="girisyap.html" class="login-btn">Giriş Yap</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>İlaçAsistan Hakkında</h1>
+            <p>Güvenli ilaç kullanımı için geliştirdiğimiz akıllı platform</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="main-content">
+        <div class="container">
+            
+            <!-- Product Description -->
+            <div class="content-section fade-in">
+                <div class="section-content">
+                    <div class="section-header">
+                        <div class="section-icon">📝</div>
+                        <h2 class="section-title">Ürün Açıklaması</h2>
+                    </div>
+                    <p class="section-text">
+                        İlaç takibi ve etkileşim kontrolü sistemi, hastaların kullandıkları ilaçların birbirleriyle uyumluluğunu analiz ederek güvenli tedavi süreçlerini destekler. Çoklu ilaç kullanımında ortaya çıkabilecek yan etkileri ve tehlikeli etkileşimleri önceden tespit ederek sağlık risklerini minimuma indirir.
+                    </p>
+                    <p class="section-text">
+                        Gelişmiş algoritmalar ve kapsamlı veritabanı ile desteklenen sistemimiz, kullanıcıların sağlığını korumak için sürekli çalışır ve en güncel tıbbi bilgileri sunar.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Product Features -->
+            <div class="content-section slide-in-left">
+                <div class="section-content">
+                    <div class="section-header">
+                        <div class="section-icon">🌟</div>
+                        <h2 class="section-title">Ürün Özellikleri</h2>
+                    </div>
+                    <ul class="features-list">
+                        <li>
+                            <div>
+                                <strong>Kullanıcı Dostu Arayüz:</strong> İlaç bilgilerini kolayca giriş yapabilme ve kişiselleştirilmiş ilaç takvimi oluşturma imkanı sunar.
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <strong>Gerçek Zamanlı Kontrol:</strong> 7/24 ilaç etkileşim kontrolü ve anında uyarı sistemi ile kritik durumları önceden tespit eder.
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <strong>Kapsamlı Veritabanı:</strong> Binlerce ilaç ve etkileşim bilgisini içeren güvenilir kaynak sunar.
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <strong>Akıllı Hatırlatma Sistemi:</strong> Doğru dozda ve zamanında ilaç kullanımını destekler.
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <strong>Profesyonel Raporlama:</strong> Sağlık profesyonelleri için detaylı raporlama ve hasta takip modülü içerir.
+                            </div>
+                        </li>
+                       
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Target Audience -->
+            <div class="content-section slide-in-right">
+                <div class="section-content">
+                    <div class="section-header">
+                        <div class="section-icon">🎯</div>
+                        <h2 class="section-title">Hedef Kitle</h2>
+                    </div>
+                    <p class="section-text">
+                        İlaçAsistan, geniş bir kullanıcı kitlesine hitap ederek farklı ihtiyaçlara özel çözümler sunar:
+                    </p>
+                    
+                    <div class="audience-grid">
+                        <div class="audience-card">
+                            <div class="audience-icon">👴👵</div>
+                            <h3>Kronik Hastalar</h3>
+                            <p>Düzenli ilaç kullanımı gereken hastalar ve yaşlı bireyler için güvenli takip sistemi</p>
+                        </div>
+                        
+                        <div class="audience-card">
+                            <div class="audience-icon">💊</div>
+                            <h3>Çoklu İlaç Kullanıcıları</h3>
+                            <p>Birden fazla ilaç kullanan kişiler için etkileşim kontrolü ve güvenlik</p>
+                        </div>
+                        
+                        <div class="audience-card">
+                            <div class="audience-icon">👨‍⚕️</div>
+                            <h3>Sağlık Profesyonelleri</h3>
+                            <p>Doktor ve eczacılar için hasta takip ve ilaç yönetim araçları</p>
+                        </div>
+                        
+                        <div class="audience-card">
+                            <div class="audience-icon">👨‍👩‍👧‍👦</div>
+                            <h3>Aile Üyeleri</h3>
+                            <p>Hasta yakınları için takip ve destek sistemi</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>İlaçAsistan</h3>
+                    <p>Güvenli ilaç kullanımı için en gelişmiş dijital asistanınız. Sağlığınız bizim önceliğimiz.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hızlı Linkler</h3>
+                    <ul>
+                        <li><a href="anasayfa.html">Ana Sayfa</a></li>
+                        <li><a href="hakkinda.html">Hakkında</a></li>
+                        <li><a href="ilac-sorgula.html">İlaç Sorgula</a></li>
+                        <li><a href="profilim.html">Profilim</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Destek</h3>
+                    <ul>
+                        <li><a href="sss.html">SSS</a></li>
+                        <li><a href="iletisim.html">İletişim</a></li>
+                        <li><a href="kullanim-kilavuzu.html">Kullanım Kılavuzu</a></li>
+                        <li><a href="gizlilik-politikasi.html">Gizlilik Politikası</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>İletişim</h3>
+                    <ul>
+                        <li>📧 info@ilacasistan.com</li>
+                        <li>📞 +90 (212) 123 45 67</li>
+                        <li>📍 İstanbul, Türkiye</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 İlaçAsistan. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth fade-in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animation elements
+        document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Header background on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(102, 126, 234, 0.95)';
+            } else {
+                header.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            }
+        });
+    </script>
+</body>
+</html>
